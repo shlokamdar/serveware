@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Signup{% endblock %}
+{% block navigation %} {% endblock navigation %}
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+        <h3 class="text-center">Join as Customer</h3>
+        <p class="text-center">
+            <a href="{% url 'accounts:customer_signin' %}" style="color: #7872dd; text-decoration: none;">Have an account?</a> 
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Username Field -->
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" id="id_username" required>
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {% for error in form.username.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-3">
+                <label for="id_email" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" id="id_email" required>
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+                <label for="id_password1" class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="password" name="password1" class="form-control" id="id_password1" required>
+                    <span class="input-group-text" id="toggle-password1">
+                        <i id="eye-icon1" class="bi bi-eye"></i>
+                    </span>
+                </div>
+                <div id="password-strength" class="mt-2"></div>
+                {% if form.password1.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password1.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+                <label for="id_password2" class="form-label">Confirm Password</label>
+                <div class="input-group">
+                    <input type="password" name="password2" class="form-control" id="id_password2" required>
+                    <span class="input-group-text" id="toggle-password2">
+                        <i id="eye-icon2" class="bi bi-eye"></i>
+                    </span>
+                </div>
+                {% if form.password2.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password2.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Phone Field -->
+            <div class="mb-3">
+                <label for="id_phone" class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" id="id_phone" required>
+                {% if form.phone.errors %}
+                    <div class="text-danger">
+                        {% for error in form.phone.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Date of Birth Field -->
+            <div class="mb-3">
+                <label for="id_dob" class="form-label">Date of Birth</label>
+                <input type="date" name="dob" class="form-control" id="id_dob" value="{{ form.dob.value }}" required>
+                {% if form.dob.errors %}
+                    <div class="text-danger">
+                        {% for error in form.dob.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100" style="background-color: #7872dd; border: none;">Sign Up</button>
+        </form>
+    </div>
+</div>
+
+<!-- Include Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+    // Toggle Password Visibility
+    const passwordField1 = document.getElementById("id_password1");
+    const togglePassword1 = document.getElementById("toggle-password1");
+    const eyeIcon1 = document.getElementById("eye-icon1");
+
+    togglePassword1.addEventListener("click", function() {
+        const type = passwordField1.type === "password" ? "text" : "password";
+        passwordField1.type = type;
+
+        // Toggle eye icon
+        eyeIcon1.classList.toggle("bi-eye-slash");
+        eyeIcon1.classList.toggle("bi-eye");
+    });
+
+    // Toggle Confirm Password Visibility
+    const passwordField2 = document.getElementById("id_password2");
+    const togglePassword2 = document.getElementById("toggle-password2");
+    const eyeIcon2 = document.getElementById("eye-icon2");
+
+    togglePassword2.addEventListener("click", function() {
+        const type = passwordField2.type === "password" ? "text" : "password";
+        passwordField2.type = type;
+
+        // Toggle eye icon
+        eyeIcon2.classList.toggle("bi-eye-slash");
+        eyeIcon2.classList.toggle("bi-eye");
+    });
+
+   // Password Strength Meter
+const passwordInput = document.querySelector('#password1');
+const strengthMeter = document.querySelector('#password-strength');
+
+passwordInput.addEventListener("input", function() {
+    const strength = checkPasswordStrength(passwordInput.value);
+    let strengthText = '';
+    let strengthClass = '';
+
+    switch (strength) {
+        case 0:
+            strengthText = 'Weak Password';
+            strengthClass = 'text-danger';
+            break;
+        case 1:
+            strengthText = 'Medium Password';
+            strengthClass = 'text-warning';
+            break;
+        case 2:
+            strengthText = 'Strong Password';
+            strengthClass = 'text-primary';
+            break;
+        default:
+            strengthText = 'Very Strong Password';
+            strengthClass = 'text-success';
+            break;
+    }
+
+    strengthMeter.innerHTML = `<small class="${strengthClass}">${strengthText}</small>`;
+});
+
+// Check password strength function
+function checkPasswordStrength(password) {
+    const lengthCriteria = /.{8,}/;
+    const numberCriteria = /\d/;
+    const uppercaseCriteria = /[A-Z]/;
+    const specialCharCriteria = /[!@#$%^&*(),.?":{}|<>]/;
+
+    let strength = 0;
+    if (lengthCriteria.test(password)) strength++;
+    if (numberCriteria.test(password)) strength++;
+    if (uppercaseCriteria.test(password)) strength++;
+    if (specialCharCriteria.test(password)) strength++;
+
+    return strength;
+}
+</script>
+
+<style>
+    .input-group-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

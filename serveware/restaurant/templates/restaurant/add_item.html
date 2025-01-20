@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block navigation %}{% endblock navigation %}
+{% block title %}Add New Menu Item{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="p-4" style="background-color: #f9f9f9; border-radius: 10px; max-width: 700px; margin: 0 auto;">
+        <h3 class="text-center" style="color: #4e4b7c; font-weight: bold;">Add New Menu Item</h3>
+        <p class="text-center text-muted">Add delicious dishes to your menu for {{ restaurant.restaurant_name }}</p>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Item Name -->
+            <div class="mb-3">
+                <label for="name" class="form-label" style="font-weight: 600;">Item Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="Enter item name" required>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label" style="font-weight: 600;">Description</label>
+                <textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter item description"></textarea>
+            </div>
+
+            <!-- Price -->
+            <div class="mb-3">
+                <label for="price" class="form-label" style="font-weight: 600;">Price (₹)</label>
+                <input type="number" name="price" id="price" class="form-control" step="0.01" placeholder="Enter item price" required>
+            </div>
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label for="image" class="form-label" style="font-weight: 600;">Upload Image</label>
+                <input type="file" name="image" id="image" class="form-control">
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+                <label for="category" class="form-label" style="font-weight: 600;">Category</label>
+                <select name="category" id="category" class="form-control">
+                    {% for value, label in form.category.field.choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Tags -->
+            <div class="mb-3">
+                <label class="form-label" style="font-weight: 600;">Tags</label>
+                <div class="form-check">
+                    <input type="checkbox" name="is_spicy" id="is_spicy" class="form-check-input">
+                    <label for="is_spicy" class="form-check-label">Spicy</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_popular" id="is_popular" class="form-check-input">
+                    <label for="is_popular" class="form-check-label">Popular</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_jain_option" id="is_jain_option" class="form-check-input">
+                    <label for="is_jain_option" class="form-check-label">Jain Option</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_vegan" id="is_vegan" class="form-check-input">
+                    <label for="is_vegan" class="form-check-label">Vegan</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_non_veg" id="is_non_veg" class="form-check-input">
+                    <label for="is_non_veg" class="form-check-label">Non-Veg</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_pure_veg" id="is_pure_veg" class="form-check-input">
+                    <label for="is_pure_veg" class="form-check-label">Pure Veg</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_chefs_special" id="is_chefs_special" class="form-check-input">
+                    <label for="is_chefs_special" class="form-check-label">Chef's Special</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_soup" id="is_soup" class="form-check-input">
+                    <label for="is_soup" class="form-check-label">Soup</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="is_available" id="is_available" class="form-check-input" checked>
+                    <label for="is_available" class="form-check-label">Available</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100" style="background-color: #7872dd; border: none;">Add Item</button>
+        </form>
+
+    
+    </div>
+</div>
+{% endblock %}

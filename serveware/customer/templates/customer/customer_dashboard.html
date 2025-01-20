@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block navigation %} {% endblock navigation %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-6" style="color: #4C4C6D;">Welcome to ServeWare!</h1>
+            <p class="lead" style="color: #6C6C9D;">Your personalized dining experience starts here.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="color: #4C4C6D;">Scan QR Code</h5>
+                    <p class="card-text">Scan the QR code on your table to start browsing the menu.</p>
+                    <a href="{% url 'customer:scan_qr' %}" class="btn btn-primary w-100" style="background-color: #7872dd;">Scan QR</a>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+</div>
+
+<script>
+    
+    function redirectToMenu() {
+        const storedQRCode = localStorage.getItem('qr_code');
+        const storedTableNumber = localStorage.getItem('table_number');
+        if (storedQRCode && storedTableNumber) {
+            const url = `/customer/menu/${storedQRCode}/${storedTableNumber}/`;
+            window.location.href = url;
+        } else {
+            alert("You need to scan a QR code first!");
+        }
+    }
+</script>
+{% endblock content %}

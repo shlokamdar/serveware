@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    
+    <div class="row justify-content-between mb-5">
+        <!-- Card 1: Transform Your Restaurant Operations -->
+        <div class="col-12 col-sm-12 col-md-5 mb-4 mb-md-0">
+            <div class="container rounded-4 p-5 d-flex align-items-center" style="background-color: #f0ebf8; text-align: center;">
+                <div class="col-md-8">
+                    <h3 class="display-5 fw-bold" style="color: #403e6b;">Transform Your Restaurant Operations with ServeWare</h3>
+                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Join as Restaurant</a>
+                </div>
+                <div class="col-md-4 d-flex justify-content-center"> 
+                    <img src="{% static 'media/1.png' %}" alt="Transform Your Restaurant Operations" style="width: 100%; max-width: 300px; margin-bottom: 15px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Elevate Your Dining Experience -->
+        <div class="col-12 col-sm-12 col-md-5">
+            <div class="container rounded-4 p-5 d-flex align-items-center" style="background-color: #f0ebf8; text-align: center;">
+                <div class="col-md-8">
+                    <h3 class="display-5 fw-bold" style="color: #403e6b;">Elevate Your Dining Experience with ServeWare</h3>
+                    <a href="{% url 'accounts:join_customer' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Experience Now</a>
+                </div>
+                <div class="col-md-4 d-flex justify-content-center"> 
+                    <img src="{% static 'media/2.png' %}" alt="Elevate Your Dining Experience" style="width: 100%; max-width: 300px; margin-bottom: 15px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="why-serveware" data-aos="fade-up">
+        <h2 class="display-3"> <i> why </i>  <span class="display-2"> <br>use Serveware?</span></h2>
+        <div class="stars">
+            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+    </div>
+
+    <section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+        <div class="container text-start">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-md-6 mb-4 mb-md-0">
+                    <img src="{% static 'media/allinone.png' %}" alt="Scan menu" class="img-fluid" style="margin-bottom: 15px;">
+                </div>
+                <div class="col-12 col-sm-12 col-md-6">
+                    <h2 class="fw-bold display-6" style="color: #403e6b;">Seamless Restaurant Management</h2>
+                    <p style="font-size:1.5em">No need to juggle multiple platforms to manage restaurant operations. With ServeWare, you can view and update orders, manage tables, and display your menu—all from a single platform. Simplify your workflow and focus on delivering great service.</p>
+                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Join us today</a>
+                </div>
+            </div>  
+        </div>
+    </section>
+
+    <section class="py-5 bg">
+        <div class="container text-center text-md-start" data-aos="fade-up">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-md-6 mb-4 mb-md-0">
+                    <h2 class="fw-bold display-6" style="color: #403e6b;">Scan to access menu</h2>
+                    <p style="font-size:1.5em">Enhance your customers’ dining experience with QR code-based menus. Each table has a unique QR code that customers can scan to view the menu, place orders, and even make requests directly from their phones. Say goodbye to manual menus and hello to seamless digital ordering.</p>
+                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Get Started</a>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6">
+                    <img src="{% static 'media/menu-scan-new.gif' %}" alt="Scan menu" class="img-fluid" style="height: 500px; margin-bottom: 15px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-5 text-center mt-5">
+        <div class="container text-start" data-aos="fade-up">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-md-6 mb-4 mb-md-0">
+                    <img src="{% static 'media/emp-mgm.png' %}" alt="Recipes" class="img-fluid" style="height: 500px; margin-bottom: 15px;">
+                </div>
+                <div class="col-12 col-sm-12 col-md-6">
+                    <h2 class="fw-bold display-6" style="color: #403e6b;">Employee Access & Management</h2>
+                    <p style="font-size:1.5em">Give your employees the tools they need to excel. ServeWare lets employees manage and track orders, address customer requests, and update order statuses in real time. Ensure smooth coordination and improve efficiency across the board.</p>
+                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Join ServeWare now!</a>
+                </div>
+            </div>  
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container text-center text-md-start" data-aos="fade-up">
+            <div class="row align-items-center">
+                <div class="col-12 col-sm-12 col-md-6 mb-4 mb-md-0">
+                    <h2 class="fw-bold display-6" style="color: #403e6b;">Happy Customers</h2>
+                    <p style="font-size:1.5em">From easy QR code access to efficient service, ServeWare helps you create a delightful dining experience. Keep customers happy with faster service, personalized attention, and a streamlined ordering process. Happy customers mean loyal customers!</p>
+                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Login as Restaurant</a>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6">
+                    <img src="{% static 'media/happy-cust.png' %}" alt="Add Recipes" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock content %}

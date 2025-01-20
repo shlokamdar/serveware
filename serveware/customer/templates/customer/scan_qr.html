@@ -1,0 +1,144 @@
+{% extends "base.html" %} {% block navigation %}{% endblock navigation %} 
+{% block content %}
+<div class="container py-5">
+  <br /><br /><br /><br /><br />
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4" style="background-color: #f7f7f7">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light-green text-center">
+          <h3 style="color: #7872dd; text-decoration: none">
+            Enter Restaurant Code
+          </h3>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="restaurant_code" class="form-label"
+                >Restaurant Code</label
+              >
+              <input
+                type="text"
+                name="restaurant_code"
+                id="restaurant_code"
+                class="form-control"
+                required
+              />
+            </div>
+
+            <div id="qrScanSection" class="mt-4">
+              <button
+                class="btn btn w-100"
+                style="background-color: #7872dd; color: white"
+                id="scanButton"
+              >
+                Scan QR Code
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              style="background-color: #7872dd; color: white"
+              class="btn btn w-100 mt-2"
+            >
+              Submit
+            </button>
+
+            {% if error %}
+            <div class="text-danger mt-3">
+              <p>{{ error }}</p>
+            </div>
+            {% endif %}
+          </form>
+
+          <div id="qrScannerContainer" class="mt-3" style="display: none">
+            <video
+              id="qrVideo"
+              width="100%"
+              height="auto"
+              style="display: block"
+            ></video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br /><br /><br /><br /><br />
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
+<script>
+  let videoStream;
+  let scanning = false;
+
+  function startScanner() {
+    const scanButton = document.getElementById("scanButton");
+    const qrScannerContainer = document.getElementById("qrScannerContainer");
+    const restaurantCodeInput = document.getElementById("restaurant_code");
+
+    scanButton.style.display = "none";
+    qrScannerContainer.style.display = "block";
+
+    const video = document.getElementById("qrVideo");
+
+    navigator.mediaDevices
+      .getUserMedia({
+        video: { facingMode: "environment" },
+      })
+      .then((stream) => {
+        videoStream = stream;
+        video.srcObject = stream;
+        video.play();
+
+        video.addEventListener("play", function () {
+          scanning = true;
+          scanQRCode(video);
+        });
+      })
+      .catch((error) => {
+        console.error("Error accessing the camera: ", error);
+      });
+  }
+
+  function scanQRCode(video) {
+    if (scanning) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = video.videoWidth || video.clientWidth;
+      canvas.height = video.videoHeight || video.clientHeight;
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+      const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
+
+      if (qrCode) {
+        const restaurantCodeInput = document.getElementById("restaurant_code");
+        restaurantCodeInput.value = qrCode.data;
+        stopScanner();
+      } else {
+        requestAnimationFrame(() => scanQRCode(video));
+      }
+    }
+  }
+
+  function stopScanner() {
+    scanning = false;
+    const video = document.getElementById("qrVideo");
+    const qrScannerContainer = document.getElementById("qrScannerContainer");
+    const scanButton = document.getElementById("scanButton");
+
+    video.pause();
+    video.srcObject.getTracks().forEach((track) => track.stop());
+    qrScannerContainer.style.display = "none";
+    scanButton.style.display = "block";
+  }
+
+  document.getElementById("scanButton").addEventListener("click", startScanner);
+</script>
+{% endblock content %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurant Sign In{% endblock %}
+
+{% block navigation %} {% endblock navigation %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+        <h3 class="text-center" style="color: #4e4b7c; font-weight: bold;">Restaurant Sign In</h3>
+        <div class="mt-3">
+            <p class="text-center">
+                <a href="{% url 'accounts:restaurant_signup' %}" style="color: #7872dd; text-decoration: none;">Create an Account</a> | 
+                <a href="{% url 'accounts:forgot_password' %}" style="color: #7872dd; text-decoration: none;">Forgot Password?</a>
+            </p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Restaurant Name Field -->
+            <div class="mb-3">
+                <label for="restaurant_name" class="form-label">Restaurant Name</label>
+                <input type="text" name="restaurant_name" class="form-control" id="restaurant_name" value="{{ form.restaurant_name.value }}" required placeholder="Enter Restaurant Name">
+                {% if form.restaurant_name.errors %}
+                    <div class="text-danger">
+                        {% for error in form.restaurant_name.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Username Field -->
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" id="username" value="" required placeholder="Enter Username">
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {% for error in form.username.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Password Field  -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="password" name="password" class="form-control" id="password" required placeholder="Enter Password">
+                    <span class="input-group-text" id="show-password" style="cursor: pointer;">
+                        <i class="fas fa-eye" id="togglePassword"></i>
+                    </span>
+                </div>
+                {% if form.password.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" style="background-color: #7872dd; border: none;">Sign In</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script> 
+<script>
+    // Password Visibility Toggle
+    const togglePassword = document.querySelector("#togglePassword");
+    const passwordField = document.querySelector("#password");
+    
+    togglePassword.addEventListener("click", function () {
+        const type = passwordField.type === "password" ? "text" : "password";
+        passwordField.type = type;
+        this.classList.toggle("fa-eye-slash");
+    });
+</script>
+
+{% endblock %}

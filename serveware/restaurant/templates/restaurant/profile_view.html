@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurant Profile{% endblock %}
+
+{% block navigation %} {% endblock navigation %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 15px; max-width: 700px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+        <h3 class="text-center mb-4" style="color: #4e4b7c; font-weight: bold; font-size: 28px;">{{ restaurant.restaurant_name }} - Profile</h3>
+        
+        <div class="mt-4">
+            <p><strong>Address:</strong> {{ restaurant.restaurant_address }}</p>
+            <p><strong>Landmark:</strong> {{ restaurant.restaurant_landmark }}</p>
+            <p><strong>Pincode:</strong> {{ restaurant.restaurant_pincode }}</p>
+            <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+            <p><strong>Email:</strong> {{ restaurant.email }}</p>
+            <p><strong>GST Number:</strong> {{ restaurant.gst_number }}</p> 
+
+        <!-- QR Code Display -->
+        <div class="mt-4 text-center">
+            <p style="color: rgb(106, 4, 165); font-weight: bold; font-size: 18px; margin-bottom: 15px;">
+                Scan the QR code to view the menu.
+            </p>
+            <a href="{% url 'restaurant:view_menu' restaurant.qr_code %}">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?data=http://127.0.0.1:8000/restaurant/restaurant/{{ restaurant.qr_code }}/menu/&size=150x150" alt="QR Code" class="img-fluid">
+                
+            </a> 
+        </div>
+
+        <div class="text-center mt-4" style="display: flex; justify-content: center; gap: 20px;">
+            <a href="{% url 'restaurant:restaurant_profile_edit' %}" 
+               class="btn btn-primary" 
+               style="background-color: #5c61f2; border: none; font-weight: bold; padding: 10px 20px; border-radius: 25px; transition: background-color 0.3s;">
+               Edit Profile
+            </a>
+            <a href="{% url 'restaurant:restaurant_dashboard' %}" 
+               class="btn btn-primary" 
+               style="background-color: #5c61f2; border: none; font-weight: bold; padding: 10px 20px; border-radius: 25px; transition: background-color 0.3s;">
+               Back to Dashboard
+            </a>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+<!-- Optional Styles -->
+<style>
+    /* Hover and active state for the "Clipboard" button */
+    #copy-button:hover {
+        background-color: #7872dd;
+        color: white;
+        border-color: #7872dd;
+        cursor: pointer;
+    }
+
+    #copy-button:active {
+        transform: scale(0.95);
+    }
+
+    #copy-button:focus {
+        outline: none;
+        box-shadow: 0 0 5px #7872dd;
+    }
+
+    /* Hover effect for the Edit Profile button */
+    .btn-primary:hover {
+        background-color: #4e4b7c;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .btn-primary:focus {
+        outline: none;
+        box-shadow: 0 0 8px #7872dd;
+    }
+</style>
+
+<!-- Clipboard Copy Script -->
+<script>
+    document.getElementById('copy-button').addEventListener('click', function() {
+        const empLoginCode = document.getElementById('emp-login-code').textContent;
+        navigator.clipboard.writeText(empLoginCode).then(function() {
+            alert('Employee login code copied to clipboard!');
+        }, function(err) {
+            alert('Failed to copy: ', err);
+        });
+    });
+</script>
+
+<!-- Include Bootstrap Icons for the clipboard icon -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="row w-100">
+        <!-- Signup and Login Cards -->
+        <div class="col-lg-5 col-md-6 mx-auto mb-4">
+            <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
+                <h4 class="display-6 fw-bold" style="color: #403e6b;">New to serveware?</h4>
+                <div class="d-flex justify-content-around mt-3">
+                    <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Signup</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 col-md-6 mx-auto mb-4">
+            <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
+                <h4 class="display-6 fw-bold" style="color: #403e6b;">Hello again</h4>
+                <div class="d-flex justify-content-around mt-3">
+                    <a href="{% url 'accounts:customer_signin' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How This Works Section -->
+<div class="why-serveware mt-5 text-center" data-aos="fade-up">
+    <h2 class="display-3 fw-bold" style="color: #403e6b;">
+        <i>For Customers - How does </i>  
+        <br> <span>ServeWare Work?</span>
+    </h2> 
+    <br> <br>
+    <img src="{% static 'media/scroll-up.gif' %}" alt="Scroll Up" style="margin: auto; display: block;">
+</div>
+<br> 
+
+<!-- Step 1: Sign Up -->
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/signup.png' %}" alt="Sign Up" class="img-fluid mb-4 mb-md-0">
+            </div>
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 1: Sign Up</h2>
+                <p style="font-size: 1.5em;">Create your ServeWare customer profile in just a few steps to start exploring restaurants and placing orders.</p>
+                <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign Up Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Step 2: Scan & Browse Menu -->
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 2: Scan & Browse Menu</h2>
+                <p style="font-size: 1.5em;">Scan the QR code on your table or enter the restaurant's unique code to access the menu, view details of dishes, and add your favorites to your cart.</p>
+                <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Learn More</a>
+            </div>
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/menu-scan-new.gif' %}" alt="Scan QR Code" class="img-fluid mb-4 mb-md-0">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Step 3: Place Your Order -->
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/place-order.png' %}" alt="Browse Menu" class="img-fluid mb-4 mb-md-0">
+            </div>
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;"> Step 3: Place Your Order</h2>
+                <p style="font-size: 1.5em;">Select items, customize your order, and place it directly through ServeWare for a smooth and contactless experience. </p>
+                <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">See Menu</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Step 4: Enjoy Your Meal -->
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 4: Enjoy Your Meal</h2>
+                <p style="font-size: 1.5em;">Sit back and relax while your order is served. Enjoy your meal without having to wait for a waiter.</p>
+                <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Get Started</a>
+            </div>
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/enjoy.png' %}" alt="Place Order" class="img-fluid mb-4 mb-md-0">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Signup and Login Buttons -->
+<div class="container d-flex justify-content-center">
+    <div class="row w-100">
+        <div class="col-lg-5 col-md-6 mx-auto mb-4">
+            <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
+                <h4 class="display-6 fw-bold" style="color: #403e6b;">Join ServeWare Today</h4>
+                <div class="d-flex justify-content-around mt-3">
+                    <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign Up</a>
+                    <a href="{% url 'accounts:customer_signin' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

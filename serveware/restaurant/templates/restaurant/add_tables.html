@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Tables{% endblock %}
+{% block navigation %}{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 15px; max-width: 700px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+        <h3 class="text-center mb-4" style="color: #4e4b7c; font-weight: bold; font-size: 28px;">Manage Restaurant Tables</h3>
+
+        <div class="tables">
+            {% for table in tables %}
+                <div class="table">
+                    <p>Table {{ table.table_number }} - Seats: {{ table.seats }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_table_number" style="font-weight: bold; color: #4e4b7c;">Table Number</label>
+                <input type="text" id="id_table_number" name="table_number" class="form-control">
+                {% if table_form.table_number.errors %}
+                    <div class="text-danger">
+                        {% for error in table_form.table_number.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="id_table_seats" style="font-weight: bold; color: #4e4b7c;">Number of Seats</label>
+                <input type="text" id="id_table_seats" name="seats" class="form-control">
+                {% if table_form.seats.errors %}
+                    <div class="text-danger">
+                        {% for error in table_form.seats.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary" style="background-color: #7872dd; border: none; font-weight: bold; padding: 10px 15px; border-radius: 25px; transition: background-color 0.3s;">Add Table</button>
+            </div>
+        </form>
+    </div>
+</div>
+<br> <br> 
+{% endblock %}

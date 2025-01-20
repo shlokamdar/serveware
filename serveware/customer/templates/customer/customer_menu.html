@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% if request.user.is_authenticated %}
+                {% if request.user.user_type == 'customer' %}
+                    {% url 'customer:customer_dashboard' %}
+                {% else %}
+                    {% url 'home' %}
+                {% endif %}
+            {% else %}
+                {% url 'home' %}
+            {% endif %}">
+                ServeWare
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% if request.user.is_authenticated %}
+                        {% if request.user.user_type == 'customer' %}
+                            {% url 'customer:customer_dashboard' %}
+                        {% else %}
+                            {% url 'home' %}
+                        {% endif %}
+                    {% else %}
+                        {% url 'home' %}
+                    {% endif %}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="mailto:servware.in@gmail.com">
+                          <i class="fas fa-envelope"></i> Contact
+                        </a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_orders' qr_code=qr_code table_code=table_code %}"><i class="fas fa-box"></i> My Orders</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_cart' qr_code=qr_code table_code=table_code %}">
+                                <i class="fas fa-shopping-cart"></i> My Cart
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="#"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock navbar %}
+
+{% block navigation %}
+{% endblock navigation %}
+
+{% block content %}
+<div id="category-nav" class="sticky-top bg-white py-3 border-bottom" style="z-index: 10;">
+    <div class="d-flex justify-content-center flex-wrap gap-4">
+        {% for category_name, items in categories.items %}
+            <a href="javascript:void(0);" class="category-link text-decoration-none text-center" style="flex: 1; min-width: 100px;" onclick="setActiveCategory(this, '{{ category_name|slugify }}')">
+                <div class="category-circle text-center">
+                    {% if items|length > 0 %}
+                        <img src="{{ items.0.image.url }}" alt="{{ category_name }}" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <img src="path/to/default-image.jpg" alt="No image available" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% endif %}
+                    <small class="text-dark d-block mt-2" style="font-size: 1.2rem;">{{ category_name|title }}</small>
+                </div>
+            </a> 
+        {% endfor %}
+    </div>
+</div>  
+
+<div id="menu-content" class="container mt-5" style="scroll-margin: 120px; z-index:1">
+    {% for category_name, items in categories.items %}
+        <div id="{{ category_name|slugify }}" class="category-section mt-5">
+            <h4 class="fw-bold">Explore {{ category_name|title }} at {{ restaurant.restaurant_name }}</h4> 
+            <div class="row g-4 mt-3">
+                {% for item in items %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 {% if not item.is_available %}unavailable{% endif %}">
+                            <div class="card-img-top overflow-hidden" style="height: 150px;">
+                                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-100 h-100" style="object-fit: cover;">
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-2 text-truncate">{{ item.name }}</h6>
+                                <p class="card-text mb-1">Price: ₹{{ item.price }}</p>
+                                {% if item.is_popular %}<span class="badge bg-success">Popular</span>{% endif %}
+                            </div>
+                            <div class="card-footer bg-white border-0 text-center">
+                                <a href="{% url 'customer:view_item_details' qr_code=restaurant.qr_code table_code=table_code item_id=item.id %}" 
+                                        class="btn btn-sm {% if not item.is_available %}disabled{% endif %}"  style=" color: #7872dd"
+                                        {% if not item.is_available %}aria-disabled="true"{% endif %}>View Details
+                                </a>
+                                <a href="{% url 'customer:add_to_cart' qr_code=restaurant.qr_code table_code=table_code item_id=item.id %}"  class="btn btn-sm {% if not item.is_available %}disabled{% endif %}"  style="background-color:#7872dd;color:white"
+                                    {% if not item.is_available %}aria-disabled="true"{% endif %}>Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No items available in this category.</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    #category-nav {
+        position: sticky;
+        top: 0;
+    }
+
+    .category-link.active .category-circle {
+        border-bottom: 3px solid #7872dd;
+    }
+
+    #menu-content {
+        margin-top: 120px;
+    }
+
+    @media (max-width: 768px) {
+        #category-nav {
+            position: static;
+        }
+
+        .category-link {
+            flex: 1;
+            min-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .category-circle img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .category-circle small {
+            font-size: 1rem;
+        }
+
+        .row.g-4 {
+            margin-top: 0;
+        }
+
+        .category-section {
+            padding-top: 0;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+    }
+
+    #menu-content {
+        margin-top: 150px;
+    }
+</style>
+
+<script>
+    function setActiveCategory(element, categoryName) {
+        const links = document.querySelectorAll('.category-link');
+        links.forEach(link => {
+            link.classList.remove('active');
+        });
+    
+        element.classList.add('active');
+    
+        const section = document.getElementById(categoryName);
+        if (section) {
+            const categoryNavHeight = document.getElementById('category-nav').offsetHeight;
+            window.scrollTo({
+                top: section.offsetTop - categoryNavHeight,
+                behavior: 'smooth'
+            });
+        }
+    }
+    
+    function onScroll() {
+        const sections = document.querySelectorAll('.category-section');
+        const links = document.querySelectorAll('.category-link');
+        let activeSection = null;
+    
+        sections.forEach((section, index) => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionBottom = sectionTop + section.offsetHeight;
+    
+            if (window.scrollY >= sectionTop && window.scrollY <= sectionBottom) {
+                activeSection = links[index];
+            }
+        });
+    
+        links.forEach(link => link.classList.remove('active'));
+    
+        if (activeSection) {
+            activeSection.classList.add('active');
+        }
+    }
+    
+    window.addEventListener('scroll', onScroll);
+    document.addEventListener('DOMContentLoaded', onScroll);
+</script>
+{% endblock content %}

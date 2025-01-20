@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurant Signup{% endblock %}
+
+{% block navigation %}{% endblock navigation %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 10px; max-width: 800px; margin: 0 auto;">
+        <h3 class="text-center" style="color: #4e4b7c; font-weight: bold;">Set up your Restaurant</h3>
+        <div class="mt-3 text-center">
+            <p>Already have an account? <a href="{% url 'accounts:restaurant_signin' %}" style="color: #7872dd; text-decoration: none;">Login here</a></p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Restaurant Name Field -->
+            <div class="mb-3">
+                <label for="restaurant_name" class="form-label">Restaurant Name</label>
+                <input type="text" name="restaurant_name" class="form-control" id="restaurant_name" value="{{ form.restaurant_name.value|default:'' }}" required placeholder="Enter Restaurant Name">
+                {% if form.restaurant_name.errors %}
+                    <div class="text-danger">
+                        {% for error in form.restaurant_name.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Username Field -->
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" id="username" value="{{ form.username.value|default:'' }}" required placeholder="Enter Username">
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {% for error in form.username.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Email Address Field -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" id="email" value="{{ form.email.value|default:'' }}" required placeholder="Enter Email">
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="password" name="password1" class="form-control" id="password1" required placeholder="Enter Password">
+                    <span class="input-group-text" id="togglePassword1">
+                        <i class="fas fa-eye" id="togglePassword1"></i>
+                    </span> 
+                </div>
+                <div id="password-strength" class="mt-2"></div>
+                {% if form.password1.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password1.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                <div class="input-group">
+                    <input type="password" name="password2" class="form-control" id="password2" required placeholder="Confirm Password">
+                  
+                    <span class="input-group-text" id="togglePassword2">
+                        <i class="fas fa-eye" id="togglePassword2"></i>
+                    </span>
+                    
+                </div>
+                {% if form.password2.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password2.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Restaurant Address Field -->
+            <div class="mb-3">
+                <label for="restaurant_address" class="form-label">Restaurant Address</label>
+                <input type="text" name="restaurant_address" class="form-control" id="restaurant_address" value="{{ form.restaurant_address.value|default:'' }}" required placeholder="Enter Restaurant Address">
+                {% if form.restaurant_address.errors %}
+                    <div class="text-danger">
+                        {% for error in form.restaurant_address.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Restaurant Landmark Field -->
+            <div class="mb-3">
+                <label for="restaurant_landmark" class="form-label">Landmark</label>
+                <input type="text" name="restaurant_landmark" class="form-control" id="restaurant_landmark" value="{{ form.restaurant_landmark.value|default:'' }}" placeholder="Enter Landmark (optional)">
+                {% if form.restaurant_landmark.errors %}
+                    <div class="text-danger">
+                        {% for error in form.restaurant_landmark.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Restaurant Pincode Field -->
+            <div class="mb-3">
+                <label for="restaurant_pincode" class="form-label">Pincode</label>
+                <input type="text" name="restaurant_pincode" class="form-control" id="restaurant_pincode" value="{{ form.restaurant_pincode.value|default:'' }}" required placeholder="Enter Pincode">
+                {% if form.restaurant_pincode.errors %}
+                    <div class="text-danger">
+                        {% for error in form.restaurant_pincode.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Phone Number Field -->
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="text" name="phone" class="form-control" id="phone" value="{{ form.phone.value|default:'' }}" required placeholder="Enter Phone Number">
+                {% if form.phone.errors %}
+                    <div class="text-danger">
+                        {% for error in form.phone.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- GST Number Field -->
+            <div class="mb-3">
+                <label for="gst_number" class="form-label">GST Number</label>
+                <input type="text" name="gst_number" class="form-control" id="gst_number" value="{{ form.gst_number.value|default:'' }}" placeholder="Enter GST Number (optional)">
+                {% if form.gst_number.errors %}
+                    <div class="text-danger">
+                        {% for error in form.gst_number.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100" style="background-color: #7872dd; border: none;">Sign Up</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+<script>
+// Password Visibility Toggle for both password fields
+const togglePassword1 = document.querySelector("#togglePassword1");
+const passwordField1 = document.querySelector("#password1");
+const togglePassword2 = document.querySelector("#togglePassword2");
+const passwordField2 = document.querySelector("#password2");
+
+togglePassword1.addEventListener("click", function () {
+    const type = passwordField1.type === "password" ? "text" : "password";
+    passwordField1.type = type;
+    this.classList.toggle("fa-eye-slash");
+    this.classList.toggle("fa-eye");
+});
+
+togglePassword2.addEventListener("click", function () {
+    const type = passwordField2.type === "password" ? "text" : "password";
+    passwordField2.type = type;
+    this.classList.toggle("fa-eye-slash");
+    this.classList.toggle("fa-eye");
+});
+
+// Password Strength Meter
+const passwordInput = document.querySelector('#password1');
+const strengthMeter = document.querySelector('#password-strength');
+
+passwordInput.addEventListener("input", function() {
+    const strength = checkPasswordStrength(passwordInput.value);
+    let strengthText = '';
+    let strengthClass = '';
+
+    switch (strength) {
+        case 0:
+            strengthText = 'Weak Password';
+            strengthClass = 'text-danger';
+            break;
+        case 1:
+            strengthText = 'Medium Password';
+            strengthClass = 'text-warning';
+            break;
+        case 2:
+            strengthText = 'Strong Password';
+            strengthClass = 'text-primary';
+            break;
+        default:
+            strengthText = 'Very Strong Password';
+            strengthClass = 'text-success';
+            break;
+    }
+
+    strengthMeter.innerHTML = `<small class="${strengthClass}">${strengthText}</small>`;
+});
+
+// Check password strength function
+function checkPasswordStrength(password) {
+    const lengthCriteria = /.{8,}/;
+    const numberCriteria = /\d/;
+    const uppercaseCriteria = /[A-Z]/;
+    const specialCharCriteria = /[!@#$%^&*(),.?":{}|<>]/;
+
+    let strength = 0;
+    if (lengthCriteria.test(password)) strength++;
+    if (numberCriteria.test(password)) strength++;
+    if (uppercaseCriteria.test(password)) strength++;
+    if (specialCharCriteria.test(password)) strength++;
+
+    return strength;
+}
+</script>
+{% endblock %}
+

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-green" href="{% if request.user.is_authenticated %}
+            {% if request.user.user_type == 'customer' %}
+                {% url 'customer:customer_dashboard' %}
+            {% else %}
+                {% url 'home' %}
+            {% endif %}
+        {% else %}
+            {% url 'home' %}
+        {% endif %}">
+            ServeWare
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-green text-decoration-none" href="{% if request.user.is_authenticated %}
+                        {% if request.user.user_type == 'customer' %}
+                            {% url 'customer:customer_dashboard' %}
+                        {% else %}
+                            {% url 'home' %}
+                        {% endif %}
+                    {% else %}
+                        {% url 'home' %}
+                    {% endif %}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-green text-decoration-none" href="mailto:servware.in@gmail.com">
+                      <i class="fas fa-envelope"></i> Contact
+                    </a>
+                  </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_orders' qr_code=qr_code table_code=table_code %}">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_cart' qr_code=qr_code table_code=table_code %}">
+                            <i class="fas fa-shopping-cart"></i> My Cart
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="{% url 'accounts:logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="#">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock navbar %}
+
+{% block navigation %}{% endblock navigation %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-green">Orders for Table {{ table_code }}</h1>
+    <div class="mt-4">
+        {% if orders %}
+            <ul class="list-group">
+                {% for order in orders %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <p class="mb-0 fw-bold">Order #{{ order.id }}</p>
+                            <span class="badge bg-primary">{{ order.status }}</span>
+                        </div>
+                        <p class="mb-0">Ordered on: {{ order.order_date }}</p>
+                        <p class="mb-0">Total Price: ₹{{ order.total_price }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="alert alert-info text-center mt-3">
+                No orders found for this table.
+            </div>
+        {% endif %}
+    </div>
+    <a href="{% url 'customer:view_menu' qr_code=qr_code table_code=table_code %}" class="btn mt-2" style="font-weight: bold; border-radius: 25px; background-color: #7872dd; color: white;">Back to Menu</a>
+</div>
+
+{% endblock content %}

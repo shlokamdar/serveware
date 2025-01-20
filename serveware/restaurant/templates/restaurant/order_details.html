@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block navigation %} {% endblock navigation %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Main Order List -->
+        <div class="col-lg-9">
+            <div class="p-4" style="background-color: #f7f7f7; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                <h2 class="text-center" style="color: #282469;">Order Details</h2>
+                <h5>Order ID: {{ order.id }}</h5>
+                <p><strong>Table:</strong> {{ order.table.table_number }}</p>
+                <p><strong>Status:</strong> {{ order.status }}</p>
+                <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                <p><strong>Items:</strong></p>
+                <ul>
+                    {% for item in items %}
+                    <li>{{ item.menu_item.name }} - Quantity: {{ item.quantity }}</li>
+                    {% empty %}
+                    <li>No items found for this order.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div> 
+
+        <!-- Side panel -->
+        <div class="col-lg-3 mt-4 mt-lg-0">
+            <div class="p-4" style="background-color: #f7f7f7; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                <h4 style="color: #4e4b7c; font-weight: bold;">Order Status</h4>
+                <ul class="list-group mt-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Pending Orders
+                        <span class="badge bg-warning">{{ pending_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Completed Orders
+                        <span class="badge bg-success">{{ completed_count }}</span>
+                    </li>
+                </ul>
+
+                <h4 class="mt-4" style="color: #4e4b7c; font-weight: bold;">Quick Actions</h4>
+                <div class="d-flex flex-column gap-2 mt-3">
+                    <a href="{% url 'restaurant:view_orders' %}" class="btn btn-secondary" style="background-color: #4e4b7c; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        View Orders
+                    </a>
+                    <a href="{% url 'restaurant:view_tables' %}" class="btn btn-primary" style="background-color:rgb(90, 85, 189); border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        View Tables
+                    </a>
+                    <a href="{% url 'restaurant:restaurant_dashboard' %}" class="btn btn-secondary" style="background-color: #4e4b7c; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+{% endblock %}

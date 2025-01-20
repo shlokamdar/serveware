@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block navigation %} {% endblock navigation %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10 col-sm-12">
+          <h2 class="text-center mb-4">Edit Table {{ table.table_number }}</h2>
+
+          <form method="POST" class="bg-light p-4 rounded shadow-sm">
+            {% csrf_token %}
+            
+            <!-- Table Number Field -->
+            <div class="mb-3">
+                <label for="id_table_number" class="form-label">Table Number</label>
+                <input type="text" name="table_number" value="{{ form.table_number.value }}" class="form-control" id="id_table_number" placeholder="Enter table number">
+            </div>
+
+            <!-- Seats Field -->
+            <div class="mb-3">
+                <label for="id_seats" class="form-label">Seats</label>
+                <input type="number" name="seats" value="{{ form.seats.value }}" class="form-control" id="id_seats" placeholder="Enter number of seats">
+            </div>
+
+            <!-- Is Occupied Field -->
+            <div class="mb-3">
+                <label for="id_is_occupied" class="form-label">Occupied</label>
+                <select name="is_occupied" class="form-select" id="id_is_occupied">
+                    <option value="True" {% if form.is_occupied.value == 'True' %}selected{% endif %}>Yes</option>
+                    <option value="False" {% if form.is_occupied.value == 'False' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn" style="background-color: #7872dd; color: white; width: 100%;">Save Changes</button>
+            </div>
+          </form>
+
+          <br>
+      
+            <a href="{% url 'restaurant:view_tables' %}" class="btn" style="background-color: #7872dd; color: white; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;"> 
+              Back to Table List
+            </a>
+         
+        <a href="{% url 'restaurant:restaurant_dashboard' %}" class="btn btn-secondary" style="background-color: #4e4b7c; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+          Back to Dashboard
+      </a>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

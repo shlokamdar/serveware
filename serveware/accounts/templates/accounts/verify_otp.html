@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block navigation %}
+
+{% endblock navigation %}
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+        <h2 style="text-align: center; color: #4e4b7c; font-weight: bold;">Verify OTP</h2>
+        
+        <!-- Error Messages -->
+        {% if messages %}
+        <div style="margin-top: 20px;">
+            {% for message in messages %}
+            <div style="color: #d9534f; background-color: #f2dede; border: 1px solid #ebccd1; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="POST" style="margin-top: 20px;">
+            {% csrf_token %}
+            
+            <!-- OTP Input Field -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="otp" style="font-size: 14px; color: #4e4b7c;">Enter OTP</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter the OTP" style="width: 100%; padding: 12px; margin-top: 8px; border-radius: 5px; border: 1px solid #dcdfe6; font-size: 16px; color: #333; background-color: #f7f7f7;">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group" style="margin-top: 20px;">
+                <button type="submit" style="background-color: #7872dd; color:white; border: none; padding: 12px; font-size: 16px; border-radius: 5px; width: 100%; cursor: pointer;">
+                    Verify
+                </button>
+            </div>
+
+            <div class="back-to-signin" style="text-align: center; margin-top: 20px;">
+              <p>Remembered your password? Login here
+                  <br> 
+                  <a href="{% url 'accounts:customer_signin' %}" style="color: #7872dd; text-decoration: none;">Customer</a> | 
+                  <a href="{% url 'accounts:restaurant_signin' %}" style="color: #7872dd; text-decoration: none;"> Restaurant</a>
+              </p>
+          </div> 
+        </form>
+    </div>
+</div>
+{% endblock %}

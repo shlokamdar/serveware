@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block navigation %}{% endblock navigation %}
+{% block navbar %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% if request.user.is_authenticated %}
+                {% if request.user.user_type == 'customer' %}
+                    {% url 'customer:customer_dashboard' %}
+                {% else %}
+                    {% url 'home' %}
+                {% endif %}
+            {% else %}
+                {% url 'home' %}
+            {% endif %}">
+                ServeWare
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% if request.user.is_authenticated %}
+                        {% if request.user.user_type == 'customer' %}
+                            {% url 'customer:customer_dashboard' %}
+                        {% else %}
+                            {% url 'home' %}
+                        {% endif %}
+                    {% else %}
+                        {% url 'home' %}
+                    {% endif %}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="mailto:servware.in@gmail.com">
+                          <i class="fas fa-envelope"></i> Contact
+                        </a>
+                      </li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                       
+
+                            <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_orders' qr_code=qr_code table_code=table_code %}"><i class="fas fa-box"></i> My Orders</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_cart' qr_code=qr_code table_code=table_code %}">
+                                    <i class="fas fa-shopping-cart"></i> My Cart
+                                </a>
+                            </li>
+                            
+
+                      
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="#"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock navbar %}
+{% block content %}
+<div class="container mt-5">
+    {% if order %}
+    <h2>Order Confirmation</h2>
+    <p>Your order has been successfully placed!</p>
+    
+    <h3>Order Details</h3>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Status: {{ order.status }}</p>
+    <p>Total Price: ₹{{ order.cart.total_price }}</p> 
+
+    <h4>Items in Your Order</h4>
+    <ul>
+        {% for cart_item in order.cart.cart_items.all %}
+        <li>
+            {{ cart_item.menu_item.name }} - Quantity: {{ cart_item.quantity }} - Price: ₹{{ cart_item.total_price }}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'customer:view_menu' qr_code=qr_code table_code=table_code %}" class="btn mt-2" style="font-weight: bold; border-radius: 25px; background-color: #7872dd; color: white;">Back to Menu</a>
+    {% else %}
+    <h2>Review Your Cart</h2>
+    <p>Please review your cart before placing the order.</p>
+
+    <h3>Cart Items</h3>
+    <ul>
+        {% for cart_item in cart.cart_items.all %}
+        <li>
+            {{ cart_item.menu_item.name }} - Quantity: {{ cart_item.quantity }} - Price: ₹{{ cart_item.total_price }}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Place Order</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

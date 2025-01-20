@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Main Container -->
+<div class="container d-flex justify-content-center">
+    <div class="row w-100">
+        <div class="col-lg-5 col-md-6 mx-auto mb-4">
+            <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
+                <h4 class="display-6 fw-bold" style="color: #403e6b;">Set up your Restaurant</h4>
+                <div class="d-flex justify-content-around mt-3 flex-column flex-sm-row">
+                    <a href="{% url 'accounts:restaurant_signup' %}" class="btn animated-btn mb-2 mb-sm-0" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign Up</a>
+                    <a href="{% url 'accounts:restaurant_signin' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How This Works Section -->
+<div class="why-serveware mt-5 text-center" data-aos="fade-up">
+    <h2 class="display-3 fw-bold" style="color: #403e6b;"> 
+        <i>For Restaurants & Employees-  How does </i>  
+        <br> <span>ServeWare Work?</span>
+    </h2> 
+    <br> <br>
+    <img src="{% static 'media/scroll-up.gif' %}" alt="Scroll Up" style="margin: auto; display: block; max-width: 100%; height: auto;">
+</div>
+
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/signup.png' %}" alt="Sign Up" class="img-fluid mb-4 mb-md-0">
+            </div>
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 1: Sign Up</h2>
+                <p class="fs-5">Restaurant owners, employees, and customers can easily sign up and join the ServeWare platform.</p>
+                <a href="{% url 'accounts:restaurant_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign Up Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 2: Set Up Your Profile</h2>
+                <p class="fs-5">Fill in your details, customize your menu, and set up tables to get started. ServeWare ensures your setup process is quick and efficient.</p>
+                <a href="{% url 'accounts:restaurant_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Get Started</a>
+            </div>
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/3.png' %}" alt="Set Up Profile" class="img-fluid" style="max-height: 500px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/serve.png' %}" alt="Start Serving" class="img-fluid" style="max-height: 500px; object-fit: cover;">
+            </div>
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 3: Start Serving</h2>
+                <p class="fs-5">Let your customers scan QR codes at tables, browse menus, and place orders seamlessly. Digitize your operations for a hassle-free experience.</p>
+                <a href="{% url 'accounts:restaurant_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Try it Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
+    <div class="container text-start">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-6">
+                <h2 class="fw-bold display-6" style="color: #403e6b;">Step 4: Manage Orders</h2>
+                <p class="fs-5">Track and update order statuses in real time via your restaurant dashboard. Ensure smooth coordination between customers and employees.</p>
+                <a href="{% url 'accounts:restaurant_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Join us Today</a>
+            </div>
+            <div class="col-12 col-md-6">
+                <img src="{% static 'media/manage_serving.png' %}" alt="Manage Orders" class="img-fluid" style="max-height: 500px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final Section -->
+<div class="col-lg-5 col-md-6 mx-auto mb-4">
+    <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
+        <h4 class="display-6 fw-bold" style="color: #403e6b;">Set up your Restaurant</h4>
+        <div class="d-flex justify-content-around mt-3 flex-column flex-sm-row">
+            <a href="{% url 'accounts:restaurant_signup' %}" class="btn animated-btn mb-2 mb-sm-0" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign Up</a>
+            <a href="{% url 'accounts:restaurant_signin' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign In</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+        margin: 50px 0;
+        padding: 0;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .timeline-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-right: 20px;
+    }
+
+    .timeline-content {
+        flex-grow: 1;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+{% endblock content %}

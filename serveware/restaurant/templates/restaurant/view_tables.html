@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+{% block navigation %}{% endblock navigation %}
+
+{% block content %}
+<div class="container-fluid mt-5 mb-5">
+    <div class="row">
+        <!-- Main Table Layout -->
+        <div class="col-lg-9">
+            <div class="p-4" style="background-color: #f7f7f7; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                <h3 class="text-center mb-4" style="color: #4e4b7c; font-weight: bold; font-size: 28px;">
+                    Tables for {{ request.user.restaurant.restaurant_name }}
+                </h3>
+
+                <div class="d-flex justify-content-center flex-wrap" style="gap: 20px;">
+                {% for table in tables %}
+                <div class="table-item" style="position: relative;">
+                    <div class="table-layout {% if table.is_occupied %}occupied{% else %}available{% endif %}" 
+                        style="width: 100px; height: 100px; border-radius: 10px; display: flex; justify-content: center; align-items: center; position: relative;">
+                        <span style="color: black; font-size: 16px; font-weight: bold;">T-{{ table.table_number }}</span>
+                        <span class="occupancy-icon" style="position: absolute; bottom: 5px; right: 5px;">
+                            {% if table.is_occupied %}
+                            <i class="fas fa-user" style="color: #c0392b;"></i>
+                            {% else %}
+                            <i class="fas fa-check" style="color: #27ae60;"></i>
+                            {% endif %}
+                        </span> 
+                    </div> 
+                    
+                    <small class="d-block text-center mt-2" style="color: #4e4b7c;">Seats: {{ table.seats }}</small>
+                    <div class="d-flex justify-content-center mt-2">
+                        <a href="{% static table.qr_code_image.name %}" download="table-{{ table.table_number }}-qr.png" class="btn" style="font-size: 12px; background-color: #4e4b7c; color: white">
+                            Download QR Code 
+                        </a>
+                        
+                    </div>
+                    <!-- Edit Table Button -->
+                <div class="d-flex justify-content-center mt-2">
+                    <a href="{% url 'restaurant:edit_table' table.id %}" class="btn btn-warning" style="font-size: 12px; background-color: #f39c12; color: white">
+                        Edit Table
+                    </a>
+                </div>
+                    
+                    
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+ 
+        <!-- Side Panel -->
+        <div class="col-lg-3">
+            <div class="p-4" style="background-color: #f7f7f7; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                <h4 style="color: #4e4b7c; font-weight: bold;">Table Status</h4>
+                <ul class="list-group mt-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Available
+                        <span class="badge bg-success">{{ available_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Occupied
+                        <span class="badge bg-danger">{{ occupied_count }}</span>
+                    </li>
+                </ul>
+
+                <h4 class="mt-4" style="color: #4e4b7c; font-weight: bold;">Quick Actions</h4>
+                <div class="d-flex flex-column gap-2 mt-3">
+                    <a href="{% url 'restaurant:add_tables' %}" class="btn btn-primary" style="background-color: #7872dd; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        Add Table
+                    </a>
+                    
+                    <a href="{% url 'restaurant:view_orders' %}" class="btn btn-primary" style="background-color:rgb(90, 85, 189); border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        View Orders
+                    </a>
+                    <a href="{% url 'restaurant:restaurant_dashboard' %}" class="btn btn-secondary" style="background-color: #4e4b7c; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        Back to Dashboard
+                    </a>
+                </div>
+
+                <h4 class="mt-4" style="color: #4e4b7c; font-weight: bold;">All Tables</h4>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                {% for table in tables %}
+                    <div class="table-summary" style="width: 70px; height: 70px; border-radius: 10px; background-color: {% if table.is_occupied %}#fadbd8{% else %}#d5f5e3{% endif %}; display: flex; justify-content: center; align-items: center; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);">
+                        <span style="color: #4e4b7c; font-size: 14px; font-weight: bold;">T-{{ table.table_number }}</span>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.table-layout.occupied {
+    background-color: #fadbd8; /* Muted red */
+}
+.table-layout.available {
+    background-color: #d5f5e3; /* Muted green */
+}
+.occupancy-icon i {
+    font-size: 16px;
+}
+.table-summary {
+    font-size: 12px;
+    text-align: center;
+}
+
+{% endblock %}

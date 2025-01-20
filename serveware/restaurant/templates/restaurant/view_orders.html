@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block navigation %}{% endblock navigation %}
+{% block content %}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Main Order List -->
+        <div class="col-lg-9">
+            <div class="p-4" style="background-color: #f7f7f7; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                <h3 class="text-center mb-4" style="color: #4e4b7c; font-weight: bold; font-size: 28px;">
+                    Orders for {{ request.user.restaurant.restaurant_name }}
+                </h3>
+
+                <!-- Make the table responsive -->
+                <div class="table-responsive">
+                    <table class="table table-bordered shadow-sm">
+                        <thead style="background-color: #7872dd; color: white;">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Table</th>
+                                <th>Status</th>
+                                <th>Order Date</th>
+                                <th>Update Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr class="status-row" data-status="{{ order.status }}">
+                                <td class="align-middle">{{ order.id }}</td>
+                                <td class="align-middle">{{ order.table.table_number }}</td>
+                                <td class="align-middle">
+                                    <span class="badge 
+                                        {% if order.status == 'Pending' %}bg-warning
+                                        {% elif order.status == 'Cooking' %}bg-primary
+                                        {% elif order.status == 'Ready_to_serve' %}bg-info
+                                        {% elif order.status == 'Completed' %}bg-success
+                                        {% elif order.status == 'Bill_Paid' %}bg-secondary
+                                        {% endif %}">
+                                    {{ order.status }}
+                                    </span>
+                                </td>
+                                <td class="align-middle">{{ order.order_date }}</td>
+                                <td class="align-middle">
+                                    <div class="d-flex flex-column gap-2">
+                                        <!-- Status Toggle Options -->
+                                        {% for status, status_display in status_choices %}
+                                        <div class="form-check">
+                                            <input 
+                                                class="form-check-input status-toggle" 
+                                                type="radio" 
+                                                name="status-{{ order.id }}" 
+                                                value="{{ status }}" 
+                                                {% if order.status == status %}checked{% endif %}
+                                                data-order-id="{{ order.id }}">
+                                            <label class="form-check-label">{{ status_display }}</label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{% url 'restaurant:order_details' order.id %}" class="btn btn-primary" style="background-color:rgb(90, 85, 189)"> View Details </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No orders found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="col-lg-3">
+            <div class="p-4" style="background-color: #f7f7f7; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+                <h4 style="color: #4e4b7c; font-weight: bold;">Order Status</h4>
+                <ul class="list-group mt-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Pending Orders
+                        <span class="badge bg-warning">{{ pending_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Completed Orders
+                        <span class="badge bg-success">{{ completed_count }}</span>
+                    </li>
+                </ul>
+
+                <h4 class="mt-4" style="color: #4e4b7c; font-weight: bold;">Quick Actions</h4>
+                <div class="d-flex flex-column gap-2 mt-3">
+                    <a href="{% url 'restaurant:view_tables' %}" class="btn btn-primary" style="background-color:rgb(90, 85, 189); border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        View Tables
+                    </a>
+                    <a href="{% url 'restaurant:restaurant_dashboard' %}" class="btn btn-secondary" style="background-color: #4e4b7c; border: none; font-weight: bold; padding: 10px; border-radius: 25px; text-align: center;">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.status-toggle').forEach(toggle => {
+        toggle.addEventListener('change', function () {
+            const orderId = this.dataset.orderId;
+            const newStatus = this.value;
+
+            fetch(`/restaurant/update_order_status/${orderId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to update order status');
+                }
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Order status updated successfully!');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert(`Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('An error occurred while updating the order status.');
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

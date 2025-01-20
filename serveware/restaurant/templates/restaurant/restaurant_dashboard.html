@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block navigation %} {% endblock navigation %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4" style="color: #282469; font-weight: bold; font-size: 2.5rem;">
+        Welcome, {{ request.user.restaurant.restaurant_name }}
+    </h1>
+
+    <div class="dashboard">
+        <h2 class="text-center mb-5" style="color: #282469; font-weight: bold; font-size: 2rem;">Manage Your Restaurant</h2>
+
+        <!-- Dashboard Actions -->
+        <div class="d-flex flex-wrap justify-content-between text-center mb-4">
+            <!-- Menu Management Card -->
+            <div class="col-12 col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <a href="{% url 'restaurant:view_menu' restaurant.qr_code %}" 
+                           class="btn btn-lg btn-block d-flex flex-column align-items-center" 
+                           style="background-color: #7872dd; color: white; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease-in-out;">
+                            <i class="fas fa-utensils fa-2x mb-2"></i>
+                            Manage Menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Orders Card -->
+            <div class="col-12 col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <a href="{% url 'restaurant:view_orders' %}" 
+                           class="btn btn-lg btn-block d-flex flex-column align-items-center" 
+                           style="background-color: #7872dd; color: white; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease-in-out;">
+                            <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                            Manage Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Tables Card -->
+            <div class="col-12 col-md-4 col-lg-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <a href="{% url 'restaurant:view_tables' %}" 
+                           class="btn btn-lg btn-block d-flex flex-column align-items-center" 
+                           style="background-color: #7872dd; color: white; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease-in-out;">
+                            <i class="fas fa-table fa-2x mb-2"></i>
+                            View Tables
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static Article Section for Enhancement -->
+        <section id="dashboard-info" class="py-5 mt-5" style="background-color: #f9f9f9; border-radius: 10px;">
+            <div class="container">
+                <p style="font-size: 1.2em; color: #6c6c6c;">Welcome to the ServeWare Dashboard! Here's a quick guide to help you manage your restaurant:</p>
+                <div class="row">
+                    <div class="col-12 col-md-4 mb-4">
+                        <h4 class="fw-bold" style="color: #282469;">Step 1: Set up your Restaurant</h4>
+                        <p>Enter your restaurant details and customize your menu to get started.</p>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <h4 class="fw-bold" style="color: #282469;">Step 2: Manage Orders</h4>
+                        <p>View, update, and track customer orders in real-time to keep operations running smoothly.</p>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <h4 class="fw-bold" style="color: #282469;">Step 3: Monitor Table Status</h4>
+                        <p>Track which tables are occupied and update statuses after serving customers to maintain flow.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+{% endblock content %}

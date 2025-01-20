@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block navigation %}{% endblock %}
+{% block navbar %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% if request.user.is_authenticated %}
+                {% if request.user.user_type == 'customer' %}
+                    {% url 'customer:customer_dashboard' %}
+                {% else %}
+                    {% url 'home' %}
+                {% endif %}
+            {% else %}
+                {% url 'home' %}
+            {% endif %}">
+                ServeWare
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% if request.user.is_authenticated %}
+                        {% if request.user.user_type == 'customer' %}
+                            {% url 'customer:customer_dashboard' %}
+                        {% else %}
+                            {% url 'home' %}
+                        {% endif %}
+                    {% else %}
+                        {% url 'home' %}
+                    {% endif %}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-green text-decoration-none" href="mailto:servware.in@gmail.com">
+                          <i class="fas fa-envelope"></i> Contact
+                        </a>
+                      </li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                       
+
+                            <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_orders' qr_code=qr_code table_code=table_code %}"><i class="fas fa-box"></i> My Orders</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_cart' qr_code=qr_code table_code=table_code %}">
+                                    <i class="fas fa-shopping-cart"></i> My Cart
+                                </a>
+                            </li>
+                            
+
+                      
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="#"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock navbar %}
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5" style="background-color: #f7f7f7; border-radius: 15px;">
+        <h3 class="text-center mb-4" style="color: #4e4b7c; font-weight: bold; font-size: 28px;">Your Cart</h3>
+
+        {% if cart_items %}
+            <div class="table-responsive"> 
+                <table class="table table-striped align-middle" style="box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                    <thead style="background-color: #4e4b7c; color: white;">
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.menu_item.name }}</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <form action="{% url 'customer:update_cart_quantity' item.id 'increment' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-success m-2" style="font-weight: bold; border-radius: 25px;">+</button>
+                                    </form>
+                                    <p class="m-2">{{ item.quantity }}</p>
+                                    <form action="{% url 'customer:update_cart_quantity' item.id 'decrement' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger m-2" style="font-weight: bold; border-radius: 25px;" {% if item.quantity <= 1 %}disabled{% endif %}>-</button>
+                                    </form>
+                                </div>
+                            </td>
+                            <td>₹{{ item.menu_item.price }}</td>
+                            <td>₹{{ item.total_price }}</td>
+                            <td class="text-center">
+                                <form action="{% url 'customer:delete_cart_item' item.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" style="font-size: 20px; padding: 5px 10px; border-radius: 50%;">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="text-center mt-4" style="color: #4e4b7c; font-weight: bold;">Total: ₹{{ total_price }}</h4>
+
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="{% url 'customer:view_menu' qr_code=qr_code table_code=table_code %}" class="btn" style="font-weight: bold; border-radius: 25px; background-color: #7872dd; color: white;">Back to Menu</a>
+                <form method="POST" action="{% url 'customer:place_order' qr_code=qr_code table_code=table_code %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success" style="font-weight: bold; border-radius: 25px;">Proceed to Checkout</button>
+                </form>
+            </div>
+        {% else %}
+            <p class="text-center" style="color: #7872dd; font-size: 18px;">Your cart is empty.</p>
+            <div class="text-center mt-4">
+                <a href="{% url 'customer:view_menu' qr_code=qr_code table_code=table_code %}" class="btn" style="font-weight: bold; border-radius: 25px; background-color: #7872dd; color: white;">Back to Menu</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    table thead th {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    table tbody td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn-sm {
+        width: 40px;
+    }
+
+    .fa-trash {
+        font-size: 16px;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .gap-3 {
+        gap: 1rem;
+    }
+</style>
+
+{% endblock %}

@@ -17,7 +17,7 @@ class Table(models.Model):
     is_occupied = models.BooleanField(default=False)
     table_code = models.CharField(max_length=10, unique=True, default=generate_unique_code) 
     qr_code_image = models.ImageField(upload_to='table_qr/', blank=True, null=True)
-    BILL_PAID = models.BooleanField(default=False) 
+    BILL_PAID = models.BooleanField(default=False)  
 
     def update_table_status(self):
         print(f"Debug: Updating status for table {self.table_number}")  # Debugging print statement
@@ -25,7 +25,7 @@ class Table(models.Model):
         print(f"Debug: Number of orders associated with the table: {orders.count()}")  # Debugging print
 
         if orders.exists():
-            
+             
             if any(order.status == self.BILL_PAID for order in orders):
                 print(f"Debug: At least one order is Bill Paid for table {self.table_number}. Marking table as free.")
                 self.bill_paid = True
@@ -41,9 +41,6 @@ class Table(models.Model):
 
         self.save()  
         print(f"Debug: Final table status for {self.table_number} - Occupied: {self.is_occupied}, Bill Paid: {self.bill_paid}")
-
-
-
 
     def __str__(self):
         return f"Table {self.table_number} ({self.seats} seats)"

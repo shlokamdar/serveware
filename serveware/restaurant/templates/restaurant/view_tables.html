@@ -29,7 +29,7 @@
                     
                     <small class="d-block text-center mt-2" style="color: #4e4b7c;">Seats: {{ table.seats }}</small>
                     <div class="d-flex justify-content-center mt-2">
-                        <a href="{% static table.qr_code_image.name %}" download="table-{{ table.table_number }}-qr.png" class="btn" style="font-size: 12px; background-color: #4e4b7c; color: white">
+                        <a href="{{ table.qr_code_image.url }}" download="table-{{ table.table_number }}-qr.png" class="btn" style="font-size: 12px; background-color: #4e4b7c; color: white">
                             Download QR Code 
                         </a>
                         

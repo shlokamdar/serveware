@@ -76,7 +76,7 @@ def view_tables(request):
         buffer = BytesIO()
         img.save(buffer)
         buffer.seek(0)
-        fs = FileSystemStorage(location='static/qr_codes/')
+        fs = FileSystemStorage(location='static/media/qr_codes/') 
         file_name = f"qr_table_{table.table_number}.png"
         fs.save(file_name, buffer)
         qr_codes.append({
@@ -223,7 +223,7 @@ def edit_table(request, table_id):
         if form.is_valid():
             form.save()  
             return redirect('restaurant:view_tables') 
-    else:
-        form = TableEditForm(instance=table)
+    else: 
+        form = TableEditForm(instance=table) 
     
     return render(request, 'restaurant/edit_table.html', {'form': form, 'table': table})

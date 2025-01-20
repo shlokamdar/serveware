@@ -107,6 +107,16 @@
 </div>
 
 <style>
+    .unavailable img {
+        filter: grayscale(100%);
+        opacity: 0.7;
+    }
+    
+    .unavailable .card-title,
+    .unavailable .card-text {
+        color: gray !important;
+    }
+    
     #category-nav {
         position: sticky;
         top: 0;
@@ -115,6 +125,7 @@
     .category-link.active .category-circle {
         border-bottom: 3px solid #7872dd;
     }
+
 
     #menu-content {
         margin-top: 120px;

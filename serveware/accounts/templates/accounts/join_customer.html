@@ -4,25 +4,18 @@
 {% block content %}
 <div class="container d-flex justify-content-center">
     <div class="row w-100">
-        <!-- Signup and Login Cards -->
         <div class="col-lg-5 col-md-6 mx-auto mb-4">
             <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
-                <h4 class="display-6 fw-bold" style="color: #403e6b;">New to serveware?</h4>
-                <div class="d-flex justify-content-around mt-3">
-                    <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Signup</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5 col-md-6 mx-auto mb-4">
-            <div class="p-4 border-0 shadow" style="background-color:#f0ebf8; border-radius: 10px; text-align: center;">
-                <h4 class="display-6 fw-bold" style="color: #403e6b;">Hello again</h4>
-                <div class="d-flex justify-content-around mt-3">
-                    <a href="{% url 'accounts:customer_signin' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Login</a>
+                <h4 class="display-6 fw-bold" style="color: #403e6b;">Experience best dining</h4>
+                <div class="">
+                    <a href="{% url 'accounts:customer_signup' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign Up</a>
+                    <a href="{% url 'accounts:customer_signin' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Sign In</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- How This Works Section -->
 <div class="why-serveware mt-5 text-center" data-aos="fade-up">
@@ -34,7 +27,6 @@
     <img src="{% static 'media/scroll-up.gif' %}" alt="Scroll Up" style="margin: auto; display: block;">
 </div>
 <br> 
-
 <!-- Step 1: Sign Up -->
 <section id="features" class="py-5 text-center mt-5" data-aos="fade-up">
     <div class="container text-start">

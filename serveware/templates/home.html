@@ -2,36 +2,54 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid px-4">
+<style>
+    /* For mobile screens */
+    @media (max-width: 768px) {
+        .btn-custom {
+            padding: 8px 20px;
+            font-size: 14px;
+            border-radius: 30px;
+        }
+        .img-custom {
+            max-width: 200px;
+            margin-bottom: 10px;
+        }
+        h3 {
+            font-size: 20px;
+        }
+    }
+</style>
+<div class="container-fluid px-5">
     
-    <div class="row justify-content-between mb-5">
+    <div class="row justify-content-between mb-3">
         <!-- Card 1: Transform Your Restaurant Operations -->
-        <div class="col-12 col-sm-12 col-md-5 mb-4 mb-md-0">
-            <div class="container rounded-4 p-5 d-flex align-items-center" style="background-color: #f0ebf8; text-align: center;">
-                <div class="col-md-8">
-                    <h3 class="display-5 fw-bold" style="color: #403e6b;">Transform Your Restaurant Operations with ServeWare</h3>
-                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Join as Restaurant</a>
+        <div class="col-12 col-md-5 mb-4 mb-md-0">
+            <div class="container rounded-4 p-4 d-flex flex-column flex-md-row align-items-center" style="background-color: #f0ebf8; text-align: left;">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <h3 class="fw-bold" style="color: #403e6b;">Transform Your Restaurant Operations with ServeWare</h3>
+                    <a href="{% url 'accounts:join_restaurant' %}" class="btn animated-btn btn-custom" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Join as Restaurant</a>
                 </div>
-                <div class="col-md-4 d-flex justify-content-center"> 
-                    <img src="{% static 'media/1.png' %}" alt="Transform Your Restaurant Operations" style="width: 100%; max-width: 300px; margin-bottom: 15px;">
+                <div class="col-md-4">
+                    <img src="{% static 'media/1.png' %}" alt="Transform Your Restaurant Operations" class="img-fluid img-custom">
                 </div>
             </div>
         </div>
-
+    
         <!-- Card 2: Elevate Your Dining Experience -->
-        <div class="col-12 col-sm-12 col-md-5">
-            <div class="container rounded-4 p-5 d-flex align-items-center" style="background-color: #f0ebf8; text-align: center;">
-                <div class="col-md-8">
-                    <h3 class="display-5 fw-bold" style="color: #403e6b;">Elevate Your Dining Experience with ServeWare</h3>
-                    <a href="{% url 'accounts:join_customer' %}" class="btn animated-btn" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Experience Now</a>
+        <div class="col-12 col-md-5">
+            <div class="container rounded-4 p-4 d-flex flex-column flex-md-row align-items-center" style="background-color: #f0ebf8; text-align: left;">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <h3 class="fw-bold" style="color: #403e6b;">Elevate Your Dining Experience with ServeWare</h3>
+                    <a href="{% url 'accounts:join_customer' %}" class="btn animated-btn btn-custom" style="background-color: #625dfc; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 16px;">Experience Now</a>
                 </div>
-                <div class="col-md-4 d-flex justify-content-center"> 
-                    <img src="{% static 'media/2.png' %}" alt="Elevate Your Dining Experience" style="width: 100%; max-width: 300px; margin-bottom: 15px;">
+                <div class="col-md-4">
+                    <img src="{% static 'media/2.png' %}" alt="Elevate Your Dining Experience" class="img-fluid img-custom">
                 </div>
             </div>
         </div>
     </div>
-
+    
+    
     <div class="why-serveware" data-aos="fade-up">
         <h2 class="display-3"> <i> why </i>  <span class="display-2"> <br>use Serveware?</span></h2>
         <div class="stars">

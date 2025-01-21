@@ -2,6 +2,8 @@
 
 ServeWare is a comprehensive restaurant management system built using Django. It simplifies restaurant operations, enhances customer experiences, and streamlines tasks. The platform includes features for managing customers, orders, and restaurant tables, all through an intuitive interface. 🍴
 
+Check out the live demo here - https://serveware.pythonanywhere.com/
+
 ## Features
 
 ### 1. **Accounts Management** 🔒
@@ -71,8 +73,6 @@ ServeWare is a comprehensive restaurant management system built using Django. It
 - Integration with payment gateways. 💳
 - Analytics dashboard for restaurant performance. 📈
 
-## Contributing 🤝
-Contributions are welcome! Please fork the repository and create a pull request for any feature suggestions or bug fixes.
 
 
 

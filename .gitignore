@@ -1,0 +1,40 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+local_settings.py
+
+# Static/media generated at runtime (user uploads, generated QR codes)
+# NOTE: serveware/static/media/ also holds hand-placed marketing assets
+# referenced directly by templates (e.g. home.html) - only ignore the
+# subfolders that are populated by uploads/generated files at runtime.
+/staticfiles/
+serveware/static/media/menu_images/
+serveware/static/media/table_qr/
+serveware/static/media/qr_codes/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/

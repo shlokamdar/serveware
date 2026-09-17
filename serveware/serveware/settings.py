@@ -10,24 +10,36 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import json
+import logging
 from pathlib import Path
+
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    DJANGO_DEBUG=(bool, True),
+)
+# Local dev convenience: read a .env file next to manage.py if present.
+# In CI/production, real environment variables take precedence and no
+# .env file is required.
+environ.Env.read_env(BASE_DIR / '.env')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--k*63t$_j^y-7w+srp87-sh1%84*@wajg&=ooc%5u^21771e)c'
+# The default below is only for local development so `manage.py runserver`
+# works out of the box without a .env file. Real deployments MUST set
+# DJANGO_SECRET_KEY explicitly.
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-local-dev-only-change-me')
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Ensure you're using the database-backed session storage
 SESSION_COOKIE_NAME = 'sessionid'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DJANGO_DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 
 # Application definition
@@ -77,8 +89,6 @@ WSGI_APPLICATION = 'serveware.wsgi.application'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
-
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -124,14 +134,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static', 
+    BASE_DIR / 'static',
 ]
+# Target directory for `collectstatic` (production/deploy stage). Not used
+# by the dev server, which serves STATICFILES_DIRS directly.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'static' / 'media'
-
 
 
 # Default primary key field type
@@ -139,10 +149,65 @@ MEDIA_ROOT = BASE_DIR / 'static' / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#for email integration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'serveware.in@gmail.com'
-EMAIL_HOST_PASSWORD = 'msdx ream uzkp syxq' 
+# Email integration (used for OTP delivery). EMAIL_HOST_USER/PASSWORD are
+# real credentials and must never be committed - they are read from the
+# environment (see .env.example). When no password is configured and
+# DEBUG is on, we fall back to printing emails to the console so local
+# development and CI don't need real SMTP credentials.
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+
+if EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Logging
+# Structured JSON lines on stdout, so container/CI log collectors (the
+# "Monitoring" pipeline stage) can parse them without extra agents.
+
+class JSONLogFormatter(logging.Formatter):
+    def format(self, record):
+        payload = {
+            'timestamp': self.formatTime(record, self.datefmt),
+            'level': record.levelname,
+            'logger': record.name,
+            'message': record.getMessage(),
+        }
+        if record.exc_info:
+            payload['exc_info'] = self.formatException(record.exc_info)
+        return json.dumps(payload)
+
+
+LOG_LEVEL = env('DJANGO_LOG_LEVEL', default='INFO')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            '()': 'serveware.settings.JSONLogFormatter',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': LOG_LEVEL,
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': LOG_LEVEL,
+            'propagate': False,
+        },
+    },
+}

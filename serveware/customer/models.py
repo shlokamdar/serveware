@@ -1,8 +1,12 @@
 # customer/models.py
+import logging
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from restaurant.models import MenuItem, Restaurant  
+from restaurant.models import MenuItem, Restaurant
+
+logger = logging.getLogger(__name__)
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True)
@@ -54,13 +58,13 @@ class Order(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=PENDING)
 
     def save(self, *args, **kwargs):
-        if self.pk:  
+        if self.pk:
             original_order = Order.objects.get(pk=self.pk)
             if original_order.status != self.status and self.status == self.BILL_PAID:
-                print(f"Debug: Bill paid status has changed for order {self.id}. Updating table status.")
+                logger.debug("Bill paid status has changed for order %s. Updating table status.", self.id)
                 self.table.update_table_status()
         else:
-            print(f"Debug: New Order being created with status {self.status}")
+            logger.debug("New order being created with status %s", self.status)
 
         super().save(*args, **kwargs)
         

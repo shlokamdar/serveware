@@ -70,15 +70,16 @@ def view_tables(request):
     restaurant = request.user.restaurant
     tables = restaurant.tables.all()
     qr_codes = []
+    fs = FileSystemStorage(location='static/media/qr_codes/')
     for table in tables:
-        qr_data = f"restaurant/{restaurant.id}/table/{table.id}"
-        img = qrcode.make(qr_data)
-        buffer = BytesIO()
-        img.save(buffer)
-        buffer.seek(0)
-        fs = FileSystemStorage(location='static/media/qr_codes/') 
         file_name = f"qr_table_{table.table_number}.png"
-        fs.save(file_name, buffer)
+        if not fs.exists(file_name):
+            qr_data = f"restaurant/{restaurant.id}/table/{table.id}"
+            img = qrcode.make(qr_data)
+            buffer = BytesIO()
+            img.save(buffer)
+            buffer.seek(0)
+            fs.save(file_name, buffer)
         qr_codes.append({
             'table': table,
             'qr_code_url': fs.url(file_name)

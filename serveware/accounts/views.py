@@ -128,10 +128,6 @@ def verify_otp(request):
     return render(request, 'accounts/verify_otp.html')
 
 
-from django.contrib.auth import get_user_model
-
-
-CustomUser = get_user_model()  
 def reset_password(request, user_id):
     try:
         user = CustomUser.objects.get(id=user_id)

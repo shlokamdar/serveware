@@ -1,10 +1,16 @@
 # models/resturant app
-from django.db import models
-from accounts.models import Restaurant
+import logging
 import uuid
-import qrcode
 from io import BytesIO
+
+import qrcode
 from django.core.files.base import ContentFile
+from django.db import models
+
+from accounts.models import Restaurant
+
+logger = logging.getLogger(__name__)
+
 
 # Helper function to generate unique codes
 def generate_unique_code():
@@ -20,27 +26,34 @@ class Table(models.Model):
     BILL_PAID = models.BooleanField(default=False)  
 
     def update_table_status(self):
-        print(f"Debug: Updating status for table {self.table_number}")  # Debugging print statement
+        # Local import to avoid a circular import: customer.models imports
+        # Table from this module, so this module cannot import
+        # customer.models at load time.
+        from customer.models import Order
+
+        logger.debug("Updating status for table %s", self.table_number)
         orders = self.orders.all()  # Fetch all associated orders
-        print(f"Debug: Number of orders associated with the table: {orders.count()}")  # Debugging print
+        logger.debug("Number of orders associated with the table: %d", orders.count())
 
         if orders.exists():
-             
-            if any(order.status == self.BILL_PAID for order in orders):
-                print(f"Debug: At least one order is Bill Paid for table {self.table_number}. Marking table as free.")
-                self.bill_paid = True
-                self.is_occupied = False  
+            if any(order.status == Order.BILL_PAID for order in orders):
+                logger.debug("At least one order is Bill Paid for table %s. Marking table as free.", self.table_number)
+                self.BILL_PAID = True
+                self.is_occupied = False
             else:
                 self.is_occupied = True
-                self.bill_paid = False
-                print(f"Debug: No orders are Bill Paid for table {self.table_number}. Keeping table occupied.")
+                self.BILL_PAID = False
+                logger.debug("No orders are Bill Paid for table %s. Keeping table occupied.", self.table_number)
         else:
             self.is_occupied = False
-            self.bill_paid = False
-            print(f"Debug: No orders on table {self.table_number}. Marking as free.")
+            self.BILL_PAID = False
+            logger.debug("No orders on table %s. Marking as free.", self.table_number)
 
-        self.save()  
-        print(f"Debug: Final table status for {self.table_number} - Occupied: {self.is_occupied}, Bill Paid: {self.bill_paid}")
+        self.save()
+        logger.debug(
+            "Final table status for %s - Occupied: %s, Bill Paid: %s",
+            self.table_number, self.is_occupied, self.BILL_PAID,
+        )
 
     def __str__(self):
         return f"Table {self.table_number} ({self.seats} seats)"

@@ -1,9 +1,13 @@
+import logging
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from accounts.models import Restaurant
 from restaurant.models import MenuItem, Table
 from .models import Cart, CartItem, Order
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def customer_dashboard(request):
@@ -15,20 +19,19 @@ def scan_qr(request):
     if request.method == 'POST':
         restaurant_code = request.POST.get('restaurant_code')
         try:
-            print(f"Received QR Code: {restaurant_code}")
+            logger.debug("Received QR code: %s", restaurant_code)
             parts = restaurant_code.strip('/').split('/')
             if len(parts) >= 3:
                 restaurant_code = parts[1]
                 table_code = parts[2]
-                print(f"Extracted Restaurant Code: {restaurant_code}")
-                print(f"Extracted Table Code: {table_code}")
+                logger.debug("Extracted restaurant code: %s, table code: %s", restaurant_code, table_code)
 
                 restaurant = Restaurant.objects.get(qr_code=restaurant_code)
-                print(f"Found Restaurant: {restaurant}")
-                
+                logger.debug("Found restaurant: %s", restaurant)
+
                 table = Table.objects.get(restaurant=restaurant, table_code=table_code)
-                print(f"Found Table: {table}")
-                
+                logger.debug("Found table: %s", table)
+
                 request.session['qr_code'] = restaurant_code
                 request.session['table_number'] = table_code
 
@@ -36,7 +39,7 @@ def scan_qr(request):
             else:
                 raise ValueError("Invalid QR code format.")
         except (Restaurant.DoesNotExist, Table.DoesNotExist, ValueError) as e:
-            print(f"Error: {e}")
+            logger.warning("Invalid QR code scan: %s", e)
             error = f"Invalid QR code or table information: {e}"
             return render(request, 'customer/scan_qr.html', {'error': error})
     return render(request, 'customer/scan_qr.html')
@@ -44,14 +47,14 @@ def scan_qr(request):
 
 @login_required
 def view_menu(request, qr_code, table_code):
-    print(f"View Menu - QR Code: {qr_code}, Table Code: {table_code}")
+    logger.debug("View menu - QR code: %s, table code: %s", qr_code, table_code)
     try:
         restaurant = get_object_or_404(Restaurant, qr_code=qr_code)
-        print(f"Restaurant found: {restaurant}")
+        logger.debug("Restaurant found: %s", restaurant)
 
         table = get_object_or_404(Table, restaurant=restaurant, table_code=table_code)
-        print(f"Table found: {table}")
-        
+        logger.debug("Table found: %s", table)
+
         menu_items = restaurant.menu_items.all()
         categories = {}
         for item in menu_items:
@@ -65,12 +68,11 @@ def view_menu(request, qr_code, table_code):
             'categories': categories,
             'table_code': table_code,
             'qr_code': qr_code,
-        
+
         })
     except Exception as e:
-        error = f"Error: {e}"
-        print(error)
-        return render(request, 'customer/customer_menu.html', {'error': error})
+        logger.exception("Error rendering menu for qr_code=%s, table_code=%s", qr_code, table_code)
+        return render(request, 'customer/customer_menu.html', {'error': f"Error: {e}"})
 
 
 @login_required
@@ -90,7 +92,7 @@ def view_item_details(request, qr_code, table_code, item_id):
         }
 
         return render(request, 'customer/view_item_details.html', context)
-    
+
     except Restaurant.DoesNotExist:
         return render(request, 'customer/404.html', {'error': "Restaurant not found"})
 
@@ -117,10 +119,10 @@ def add_to_cart(request, qr_code, table_code, item_id):
                 user=request.user,
                 restaurant=restaurant,
                 table_code=table_code,
-                is_active=True  
+                is_active=True
             )
 
-        print(f"Cart Details - ID: {cart.id}, Active: {cart.is_active}, User: {cart.user.username}")
+        logger.debug("Cart details - id: %s, active: %s, user: %s", cart.id, cart.is_active, cart.user.username)
 
         cart_item, item_created = CartItem.objects.get_or_create(cart=cart, menu_item=menu_item)
 
@@ -128,25 +130,23 @@ def add_to_cart(request, qr_code, table_code, item_id):
             cart_item.quantity += 1
             cart_item.save()
 
-        print(f"Cart Item Added - Menu Item: {menu_item.name}, Quantity: {cart_item.quantity}")
+        logger.debug("Cart item added - menu item: %s, quantity: %s", menu_item.name, cart_item.quantity)
 
         messages.success(request, f"{menu_item.name} has been added to your cart!")
         return redirect('customer:view_menu', qr_code=qr_code, table_code=table_code)
 
-    except Exception as e:
+    except Exception:
         messages.error(request, "Something went wrong while adding the item to your cart.")
-        print(e)
+        logger.exception("Error adding item %s to cart for qr_code=%s, table_code=%s", item_id, qr_code, table_code)
         return redirect('customer:view_menu', qr_code=qr_code, table_code=table_code)
 
 
 @login_required
 def view_cart(request, qr_code, table_code):
-    print("view cart view")
+    logger.debug("View cart - QR code: %s, table code: %s", qr_code, table_code)
     try:
-        print(f"QR Code: {qr_code}, Table Code: {table_code}")
-
         restaurant = get_object_or_404(Restaurant, qr_code=qr_code)
-        print(f"Restaurant found: {restaurant.restaurant_name}")
+        logger.debug("Restaurant found: %s", restaurant.restaurant_name)
 
         cart = Cart.objects.filter(
             user=request.user,
@@ -160,32 +160,34 @@ def view_cart(request, qr_code, table_code):
                 user=request.user,
                 restaurant=restaurant,
                 table_code=table_code,
-                is_active=True  
+                is_active=True
             )
-            print(f"New active cart created with ID: {cart.id}")
-
+            logger.debug("New active cart created with id: %s", cart.id)
 
         if cart:
-            print(f"Cart found: ID = {cart.id}, Active = {cart.is_active}")
-            
+            logger.debug("Cart found: id=%s, active=%s", cart.id, cart.is_active)
+
             if not cart.is_active:
-                print(f"Cart is inactive! Changing cart's is_active status to True.")
-                cart.is_active = True  
+                logger.debug("Cart is inactive; changing cart's is_active status to True.")
+                cart.is_active = True
                 cart.save()
 
             for cart_item in cart.cart_items.all():
-                print(f"Cart Item - ID: {cart_item.id}, Menu Item: {cart_item.menu_item.name}, Quantity: {cart_item.quantity}, Price: {cart.total_price}")
+                logger.debug(
+                    "Cart item - id: %s, menu item: %s, quantity: %s",
+                    cart_item.id, cart_item.menu_item.name, cart_item.quantity,
+                )
         else:
-            print("No cart found for the given parameters.")
+            logger.debug("No cart found for the given parameters.")
 
         if not cart or not cart.is_active:
             messages.error(request, "This cart is no longer active. Please start a new order.")
-            print("Cart is inactive or doesn't exist.")
+            logger.debug("Cart is inactive or doesn't exist.")
             return redirect('customer:view_menu', qr_code=qr_code, table_code=table_code)
 
         cart_items = cart.cart_items.all()
         total_price = cart.total_price()
-        print(f"Total price for the cart: ₹{total_price}")
+        logger.debug("Total price for the cart: %s", total_price)
 
         return render(request, 'customer/view_cart.html', {
             'cart_items': cart_items,
@@ -194,9 +196,9 @@ def view_cart(request, qr_code, table_code):
             'qr_code': qr_code,
         })
 
-    except Exception as e:
+    except Exception:
         messages.error(request, "Something went wrong while viewing the cart.")
-        print(f"Error: {e}")
+        logger.exception("Error viewing cart for qr_code=%s, table_code=%s", qr_code, table_code)
         return redirect('customer:view_menu', qr_code=qr_code, table_code=table_code)
 
 
@@ -218,9 +220,9 @@ def update_cart_quantity(request, item_id, action):
 
         messages.success(request, "Cart updated successfully.")
 
-    except Exception as e:
+    except Exception:
         messages.error(request, "Something went wrong while updating the cart.")
-        print(e)
+        logger.exception("Error updating quantity for cart item %s", item_id)
 
     return redirect('customer:view_cart', qr_code=cart_item.cart.restaurant.qr_code, table_code=cart_item.cart.table_code)
 
@@ -254,11 +256,11 @@ def place_order(request, qr_code, table_code):
         return redirect('customer:view_menu', qr_code=qr_code, table_code=table_code)
 
     if request.method == 'POST':
-        
+
         order = Order.objects.create(
             cart=cart,
             user=request.user,
-            table=table,  
+            table=table,
             status='Pending'
         )
 
@@ -273,7 +275,7 @@ def place_order(request, qr_code, table_code):
             user=request.user,
             restaurant=restaurant,
             table_code=table_code,
-            is_active=True  
+            is_active=True
         )
 
         return render(request, 'customer/order_confirmation.html', {
@@ -298,11 +300,10 @@ def place_order(request, qr_code, table_code):
 @login_required
 def view_orders(request, qr_code, table_code):
     try:
-      
         restaurant = get_object_or_404(Restaurant, qr_code=qr_code)
         table = get_object_or_404(Table, restaurant=restaurant, table_code=table_code)
         orders = Order.objects.filter(user=request.user, table=table)
-        
+
         if not orders:
             message = "No orders found for this table."
         else:
@@ -316,5 +317,5 @@ def view_orders(request, qr_code, table_code):
         })
 
     except Exception as e:
-        print(f"Error: {e}")
+        logger.exception("Error viewing orders for qr_code=%s, table_code=%s", qr_code, table_code)
         return render(request, 'customer/view_orders.html', {'error': f"An error occurred: {e}"})

@@ -19,7 +19,7 @@ local_settings.py
 # NOTE: serveware/static/media/ also holds hand-placed marketing assets
 # referenced directly by templates (e.g. home.html) - only ignore the
 # subfolders that are populated by uploads/generated files at runtime.
-/staticfiles/
+serveware/staticfiles/
 serveware/static/media/menu_images/
 serveware/static/media/table_qr/
 serveware/static/media/qr_codes/

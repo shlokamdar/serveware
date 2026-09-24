@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.conf import settings
 from django.core import mail
 from django.urls import reverse
 
@@ -11,6 +12,10 @@ class HealthCheckTests(ServeWareTestCase):
         response = self.client.get(reverse("healthz"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "ok")
+
+    def test_healthz_post_returns_405(self):
+        response = self.client.post(reverse("healthz"))
+        self.assertEqual(response.status_code, 405)
 
     def test_fault_injection_disabled_by_default(self):
         self.assertEqual(self.client.get(reverse("simulate_error")).status_code, 404)
@@ -89,3 +94,42 @@ class PasswordResetSecurityTests(ServeWareTestCase):
         )
         self.owner.refresh_from_db()
         self.assertTrue(self.owner.check_password(new))
+
+
+class LogoutSecurityTests(ServeWareTestCase):
+    def test_get_logout_returns_405(self):
+        response = self.client.get(reverse("accounts:logout"))
+        self.assertEqual(response.status_code, 405)
+
+    def test_post_logout_logs_user_out(self):
+        owner, _ = make_restaurant_owner()
+        self.client.login(username=owner.username, password=PASSWORD)
+        dashboard_url = reverse("restaurant:restaurant_dashboard")
+        response = self.client.get(dashboard_url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(reverse("accounts:logout"))
+        self.assertEqual(response.status_code, 302)
+
+        follow_up = self.client.get(dashboard_url)
+        self.assertEqual(follow_up.status_code, 302)
+        self.assertIn("signin", follow_up["Location"])
+
+
+class SettingsSecurityTests(ServeWareTestCase):
+    def test_secret_key_is_set_and_not_hardcoded(self):
+        self.assertTrue(settings.SECRET_KEY)
+        self.assertNotEqual(settings.SECRET_KEY, "dev-only-insecure-key")
+        self.assertFalse(settings.SECRET_KEY.startswith("dev-only"))
+
+
+class MethodRestrictionTests(ServeWareTestCase):
+    def test_get_views_allow_get(self):
+        self.assertEqual(self.client.get(reverse("home")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("accounts:join_restaurant")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("accounts:join_customer")).status_code, 200)
+
+    def test_get_views_reject_post(self):
+        self.assertEqual(self.client.post(reverse("home")).status_code, 405)
+        self.assertEqual(self.client.post(reverse("accounts:join_restaurant")).status_code, 405)
+        self.assertEqual(self.client.post(reverse("accounts:join_customer")).status_code, 405)

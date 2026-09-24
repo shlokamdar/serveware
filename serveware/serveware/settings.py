@@ -37,6 +37,7 @@ from pathlib import Path
 
 import environ
 from django.core.exceptions import ImproperlyConfigured
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,11 +55,13 @@ DJANGO_ENV = env("DJANGO_ENV", default="development")
 # Defaults to False so a missing variable can never accidentally enable debug in prod.
 DEBUG = env.bool("DJANGO_DEBUG", default=False)
 
-# The default only exists so tests and `collectstatic` during `docker build` can run.
-# Production refuses to start with it.
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="dev-only-insecure-key")
-if DJANGO_ENV == "production" and SECRET_KEY.startswith("dev-only"):
-    raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set in production.")
+# No secret is ever hardcoded. Production must supply one; other environments
+# fall back to a random per-process key (sessions reset on restart, which is fine).
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="")
+if not SECRET_KEY:
+    if DJANGO_ENV == "production":
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set in production.")
+    SECRET_KEY = get_random_secret_key()
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])

@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_GET, require_POST
 
 from accounts.forms import (
     CustomerRegistrationForm,
@@ -22,14 +23,17 @@ from accounts.models import CustomUser, Customer
 logger = logging.getLogger("serveware")
 
 
+@require_GET
 def home(request):
     return render(request, "home.html")
 
 
+@require_GET
 def join_restaurant(request):
     return render(request, "accounts/join_restaurant.html")
 
 
+@require_GET
 def join_customer(request):
     return render(request, "accounts/join_customer.html")
 
@@ -156,6 +160,7 @@ def reset_password(request, user_id):
     return render(request, "accounts/reset_password.html", {"form": form})
 
 
+@require_POST
 def custom_logout(request):
     logout(request)
     return redirect("home")

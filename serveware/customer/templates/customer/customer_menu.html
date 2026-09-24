@@ -34,7 +34,12 @@
                         </a>
                     </li>
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link text-green text-decoration-none"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
                         <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_orders' qr_code=qr_code table_code=table_code %}"><i class="fas fa-box"></i> My Orders</a></li>
                         <li class="nav-item">
                             <a class="nav-link text-green text-decoration-none" href="{% url 'customer:view_cart' qr_code=qr_code table_code=table_code %}">

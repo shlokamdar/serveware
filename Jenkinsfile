@@ -93,6 +93,7 @@ pipeline {
             steps {
                 dir(env.APP_DIR) {
                     echo 'Unit tests'
+                    bat 'if exist test-reports rmdir /s /q test-reports'
                     bat '..\\.venv\\Scripts\\coverage run manage.py test --exclude-tag integration --verbosity 2'
                     echo 'Integration tests'
                     bat '..\\.venv\\Scripts\\coverage run -a manage.py test --tag integration --verbosity 2'

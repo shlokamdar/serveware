@@ -17,6 +17,7 @@
                         <thead style="background-color: #7872dd; color: white;">
                             <tr>
                                 <th>Order ID</th>
+                                <th>Customer</th>
                                 <th>Table</th>
                                 <th>Status</th>
                                 <th>Order Date</th>
@@ -28,6 +29,7 @@
                             {% for order in orders %}
                             <tr class="status-row" data-status="{{ order.status }}">
                                 <td class="align-middle">{{ order.id }}</td>
+                                <td class="align-middle">{{ order.user.username }}</td>
                                 <td class="align-middle">{{ order.table.table_number }}</td>
                                 <td class="align-middle">
                                     <span class="badge 

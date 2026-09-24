@@ -1,69 +1,49 @@
-# models/resturant app
-from django.db import models
-from accounts.models import Restaurant
+from io import BytesIO
 import uuid
 import qrcode
-from io import BytesIO
+from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db import models
+from django.urls import reverse
+from accounts.models import Restaurant
 
-# Helper function to generate unique codes
+
 def generate_unique_code():
     return str(uuid.uuid4())[:8]
+
 
 class Table(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='tables')
     table_number = models.CharField(max_length=25)
     seats = models.PositiveIntegerField()
     is_occupied = models.BooleanField(default=False)
-    table_code = models.CharField(max_length=10, unique=True, default=generate_unique_code) 
+    table_code = models.CharField(max_length=10, unique=True, default=generate_unique_code)
     qr_code_image = models.ImageField(upload_to='table_qr/', blank=True, null=True)
-    BILL_PAID = models.BooleanField(default=False)  
+    BILL_PAID = models.BooleanField(default=False)
+
+    def menu_path(self):
+        """Single source of truth for the URL encoded into the table's QR code."""
+        return reverse("customer:view_menu", args=[self.restaurant.qr_code, self.table_code])
 
     def update_table_status(self):
-        print(f"Debug: Updating status for table {self.table_number}")  # Debugging print statement
-        orders = self.orders.all()  # Fetch all associated orders
-        print(f"Debug: Number of orders associated with the table: {orders.count()}")  # Debugging print
-
-        if orders.exists():
-             
-            if any(order.status == self.BILL_PAID for order in orders):
-                print(f"Debug: At least one order is Bill Paid for table {self.table_number}. Marking table as free.")
-                self.bill_paid = True
-                self.is_occupied = False  
-            else:
-                self.is_occupied = True
-                self.bill_paid = False
-                print(f"Debug: No orders are Bill Paid for table {self.table_number}. Keeping table occupied.")
-        else:
-            self.is_occupied = False
-            self.bill_paid = False
-            print(f"Debug: No orders on table {self.table_number}. Marking as free.")
-
-        self.save()  
-        print(f"Debug: Final table status for {self.table_number} - Occupied: {self.is_occupied}, Bill Paid: {self.bill_paid}")
+        active = self.orders.exclude(status__in=["Bill_Paid", "Canceled"]).exists()
+        self.is_occupied = active
+        self.BILL_PAID = (not active) and self.orders.filter(status="Bill_Paid").exists()
+        super().save(update_fields=["is_occupied", "BILL_PAID"])
 
     def __str__(self):
         return f"Table {self.table_number} ({self.seats} seats)"
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         if not self.qr_code_image:
-            qr_data = f"/customer/{self.restaurant.qr_code}/{self.table_code}/menu"
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(qr_data)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white")
-            
+            data = f"{settings.SITE_URL}{self.menu_path()}"
+            img = qrcode.make(data)
             buffer = BytesIO()
             img.save(buffer, format="PNG")
-            file_name = f"table_{self.restaurant.qr_code}_{self.table_code}.png"
-            self.qr_code_image.save(file_name, ContentFile(buffer.getvalue()), save=False)
-        
-        super().save(*args, **kwargs)
+            self.qr_code_image.save(f"table_{self.table_code}.png", ContentFile(buffer.getvalue()), save=False)
+            super().save(update_fields=["qr_code_image"])
+
 
 class MenuItem(models.Model):
     CATEGORY_CHOICES = [
@@ -93,7 +73,7 @@ class MenuItem(models.Model):
     is_pure_veg = models.BooleanField(default=False)
     is_chefs_special = models.BooleanField(default=False)
     is_soup = models.BooleanField(default=False)
-    is_available = models.BooleanField(default=True)  # New field to track availability
+    is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

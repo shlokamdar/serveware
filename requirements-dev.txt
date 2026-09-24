@@ -1,0 +1,6 @@
+-r requirements.txt
+coverage
+unittest-xml-reporting
+ruff
+bandit
+pip-audit

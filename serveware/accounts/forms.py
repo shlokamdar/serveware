@@ -27,7 +27,7 @@ class RestaurantSignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.user_type = 'restaurant' 
+        user.user_type = 'restaurant'
         if commit:
             user.save()
             Restaurant.objects.create(
@@ -79,7 +79,7 @@ class RestaurantSignInForm(AuthenticationForm):
         if user and user.user_type != 'restaurant':
             raise forms.ValidationError("This account is not registered as a Restaurant.")
         return cleaned_data
-    
+
 # Sign-in Form for Customer
 class CustomerSignInForm(AuthenticationForm):
     class Meta:
@@ -96,17 +96,11 @@ class CustomerSignInForm(AuthenticationForm):
 
 class PasswordResetEmailForm(forms.Form):
     email = forms.EmailField(
-        max_length=254, 
+        max_length=254,
         required=True,
         widget=forms.EmailInput(attrs={'placeholder': 'Enter your registered email address'}),
         label="Email"
     )
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if not CustomUser.objects.filter(email=email).exists():
-            raise ValidationError("There is no account associated with this email.")
-        return email
 
 class SetNewPasswordForm(forms.Form):
     new_password = forms.CharField(
@@ -119,7 +113,7 @@ class SetNewPasswordForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
     def clean(self):
@@ -134,7 +128,7 @@ class SetNewPasswordForm(forms.Form):
 
 class OTPForm(forms.Form):
     otp = forms.CharField(
-        max_length=6, 
+        max_length=6,
         widget=forms.TextInput(attrs={'placeholder': 'Enter the OTP'}),
         label="One-Time Password"
     )

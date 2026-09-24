@@ -1,6 +1,8 @@
 from django import forms
+
 from accounts.models import Restaurant
-from restaurant.models import Table, MenuItem
+from restaurant.models import MenuItem, Table
+
 
 class RestaurantProfileForm(forms.ModelForm):
     class Meta:
@@ -18,8 +20,6 @@ class RestaurantProfileForm(forms.ModelForm):
             'restaurant_address': forms.Textarea(attrs={'rows': 3}),
         }
 
-
-from .models import Table
 
 class TableForm(forms.ModelForm):
     class Meta:
@@ -41,30 +41,26 @@ class TableForm(forms.ModelForm):
         return table_number
 
 
-
 class TableEditForm(forms.ModelForm):
     class Meta:
         model = Table
-        fields = ['table_number', 'seats', 'is_occupied']  
+        fields = ['table_number', 'seats', 'is_occupied']
 
-from django import forms
-from .models import MenuItem
 
 class MenuItemForm(forms.ModelForm):
     class Meta:
         model = MenuItem
-        fields = ['name', 'description', 'price', 'image', 'category', 'is_spicy', 'is_popular', 'is_jain_option', 'is_vegan', 'is_non_veg', 'is_pure_veg', 'is_chefs_special', 'is_soup', 'is_available']
+        fields = [
+            'name', 'description', 'price', 'image', 'category',
+            'is_spicy', 'is_popular', 'is_jain_option', 'is_vegan',
+            'is_non_veg', 'is_pure_veg', 'is_chefs_special', 'is_soup', 'is_available'
+        ]
 
-    # Add a custom category field where users can type their own categories
     custom_category = forms.CharField(max_length=50, required=False, label='Custom Category')
 
     def clean_category(self):
         category = self.cleaned_data.get('category')
         custom_category = self.cleaned_data.get('custom_category')
-
-        # If a custom category is provided, set it as the category
         if custom_category:
             category = custom_category
-
         return category
-

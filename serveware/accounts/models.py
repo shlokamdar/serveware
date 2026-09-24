@@ -1,4 +1,4 @@
-#models/accounts app 
+#models/accounts app
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
         ('customer', 'Customer'),
     )
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+    email = models.EmailField(unique=True)
 
 # Restaurant model
 class Restaurant(models.Model):
@@ -34,11 +35,11 @@ class Restaurant(models.Model):
     )
     email = models.EmailField(unique=True)
     gst_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
-    qr_code = models.CharField(max_length=10, unique=True, default=generate_unique_code) ### 
+    qr_code = models.CharField(max_length=10, unique=True, default=generate_unique_code) ###
 
     def __str__(self):
         return self.restaurant_name
-    
+
 # Customer model
 class Customer(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='customer_profile')
@@ -46,9 +47,9 @@ class Customer(models.Model):
         max_length=10,
         validators=[RegexValidator(regex=r'^\d{10}$', message='Phone number must be of 10 digits')]
     )
-    dob = models.DateField(null=True, blank=True) 
-    date_joined = models.DateField(auto_now_add=True) 
-    
+    dob = models.DateField(null=True, blank=True)
+    date_joined = models.DateField(auto_now_add=True)
+
     @property
     def is_birthday(self):
         if self.dob:

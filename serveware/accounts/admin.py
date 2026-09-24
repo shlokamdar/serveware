@@ -13,7 +13,7 @@ class RestaurantAdmin(admin.ModelAdmin):
 
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone','dob','is_birthday')
-    
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Restaurant, RestaurantAdmin)

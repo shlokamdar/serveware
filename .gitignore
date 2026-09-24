@@ -1,3 +1,44 @@
-env/
+# Special local files (do not commit)
+_BUILD_GUIDE.md
+_settings_final.py
+_evidence/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+env/
+venv/
+
+# Django
+serveware/db.sqlite3
+serveware/media/
+serveware/staticfiles/
+
+# Secrets & env
+.env
+.env.*
+!.env.*.example
+deploy/.env.staging
+deploy/.env.prod
+monitoring/.env
+monitoring/alertmanager/secrets/*
+!monitoring/alertmanager/secrets/.gitkeep
+
+# Test & scan output
+serveware/htmlcov/
+serveware/test-reports/
+serveware/coverage.xml
+serveware/.coverage
+serveware/.scannerwork/
+*-report.json
+*-report.html
+*-report.txt
+release-notes.txt
+build-info.json
+
+# IDE / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

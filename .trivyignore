@@ -1,0 +1,4 @@
+# .trivyignore - List of accepted / justified CVE IDs for container scans
+# Example format:
+# CVE-XXXX-YYYY: in base-image package <name>, no fix available upstream,
+# not reachable from the app (library unused at runtime). Reviewed <date>.

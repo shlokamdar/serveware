@@ -48,7 +48,13 @@
                                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                                         <div class="card h-100 {% if not item.is_available %}unavailable{% endif %}">
                                             <div class="food_image" style="height: 180px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-                                                <img src="{{ item.image.url }}" class="card-img-top object-fit-fill" alt="{{ item.name }}">
+                                                {% if item.image %}
+                                                    <img src="{{ item.image.url }}" class="card-img-top object-fit-fill" alt="{{ item.name }}">
+                                                {% else %}
+                                                    <div class="placeholder-img d-flex align-items-center justify-content-center w-100 h-100 bg-light text-muted">
+                                                        <i class="fas fa-utensils fa-2x"></i>
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ item.name|truncatechars:25 }}</h5>

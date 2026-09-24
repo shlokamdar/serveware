@@ -15,9 +15,6 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         body {
@@ -181,7 +178,12 @@
                       </li>
                       
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link text-green text-decoration-none"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
                         {% if request.user.user_type == "restaurant" %}
                             <li class="nav-item"><a class="nav-link text-green text-decoration-none" href="{% url 'restaurant:restaurant_profile_view' %}">My Profile</a></li>
                         {% endif %}

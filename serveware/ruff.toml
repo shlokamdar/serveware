@@ -1,0 +1,15 @@
+line-length = 120
+target-version = "py313"
+extend-exclude = ["migrations", "staticfiles", "media"]
+
+[lint]
+# E/W pycodestyle, F pyflakes, B bugbear, DJ django rules, T20 no print(), S bandit-lite, C90 complexity
+select = ["E", "W", "F", "B", "DJ", "T20", "S", "C90"]
+ignore = ["E501"]
+
+[lint.mccabe]
+max-complexity = 10
+
+[lint.per-file-ignores]
+"**/tests.py" = ["S101", "S105", "S106"]
+"testutils.py" = ["S105", "S106"]

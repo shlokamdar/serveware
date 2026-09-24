@@ -1,0 +1,30 @@
+name: serveware-prod
+
+services:
+  web:
+    image: localhost:5000/serveware:${APP_VERSION:-latest}
+    container_name: serveware-prod-web
+    env_file: .env.prod
+    environment:
+      APP_VERSION: ${APP_VERSION:-latest}
+    ports:
+      - "8001:8000"
+    volumes:
+      - prod-data:/data
+      - prod-media:/app/media
+    restart: unless-stopped
+    networks: [serveware-net]
+    labels:
+      serveware.env: production
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+volumes:
+  prod-data:
+  prod-media:
+
+networks:
+  serveware-net:
+    external: true

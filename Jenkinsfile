@@ -104,7 +104,8 @@ pipeline {
             post {
                 always {
                     junit allowEmptyResults: true, testResults: 'serveware/test-reports/*.xml'
-                    recordCoverage(tools: [[parser: 'COBERTURA', pattern: 'serveware/coverage.xml']])
+                    recordCoverage(tools: [[parser: 'COBERTURA', pattern: 'serveware/coverage.xml']],
+                                   sourceDirectories: [[path: 'serveware']])
                     publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true,
                                  reportDir: 'serveware/htmlcov', reportFiles: 'index.html',
                                  reportName: 'Coverage Report'])

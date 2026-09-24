@@ -52,7 +52,7 @@ ServeWare is a comprehensive restaurant ordering and table management system bui
 
 3. **Install dependencies:**
    ```bash
-   pip install -r requirements-dev.txt
+   pip install -r requirements.txt
    ```
 
 4. **Navigate to the Django application directory:**
@@ -84,7 +84,7 @@ ServeWare is a comprehensive restaurant ordering and table management system bui
 
 ServeWare features an enterprise-grade 7-stage Jenkins CI/CD pipeline running automated quality, security, and deployment gates:
 
-1. **Build & Package**: Reproducible builds with pinned dependencies, Django system checks (`manage.py check`, migration dry-run), and multi-stage container builds pushed to a local Docker registry (`localhost:5000/serveware`).
+1. **Build & Package**: Reproducible builds with pinned dependencies, Django system checks (`manage.py check`, migration dry-run), and single-stage container builds pushed to a local Docker registry (`localhost:5000/serveware`).
 2. **Test & Coverage**: Isolated test suites separating unit tests and `@tag("integration")` end-to-end user journeys. JUnit XML reporting and Cobertura code coverage strictly gated at $\ge 60\%$.
 3. **Code Quality**: Static code analysis via **SonarQube Community** enforced by a custom Quality Gate, coupled with strict **Ruff** linting.
 4. **Security Scanning**: Four-layered DevSecOps scanning:
@@ -98,7 +98,13 @@ ServeWare features an enterprise-grade 7-stage Jenkins CI/CD pipeline running au
 
 ---
 
-## Testing & Quality Commands
+## Running Tests & CI / Quality Commands
+
+For development, testing, and CI scanning, install the development dependencies:
+
+```bash
+pip install -r requirements-dev.txt
+```
 
 From the inner `serveware/` directory:
 

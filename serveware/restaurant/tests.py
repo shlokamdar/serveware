@@ -97,6 +97,14 @@ class OrderStatusApiTests(ServeWareTestCase):
         self.order.refresh_from_db()
         self.assertEqual(self.order.status, "Pending")
 
+    def test_post_without_csrf_token_returns_403(self):
+        from django.test import Client
+
+        csrf_client = Client(enforce_csrf_checks=True)
+        csrf_client.login(username=self.owner.username, password=PASSWORD)
+        response = csrf_client.post(self.url, json.dumps({"status": "Completed"}), content_type="application/json")
+        self.assertEqual(response.status_code, 403)
+
 
 class AdminSearchTests(ServeWareTestCase):
     def test_table_admin_search_does_not_crash(self):

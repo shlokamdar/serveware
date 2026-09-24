@@ -22,7 +22,8 @@ serveware/staticfiles/
 deploy/.env.staging
 deploy/.env.prod
 monitoring/.env
-monitoring/alertmanager/secrets/
+monitoring/alertmanager/secrets/*
+!monitoring/alertmanager/secrets/.gitkeep
 
 # Test & scan output
 serveware/htmlcov/

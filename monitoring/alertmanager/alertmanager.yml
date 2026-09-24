@@ -1,0 +1,32 @@
+global:
+  smtp_smarthost: smtp.gmail.com:587
+  smtp_from: "ServeWare Alerts <serveware.in@gmail.com>"
+  smtp_auth_username: serveware.in@gmail.com
+  smtp_auth_password_file: /etc/alertmanager/secrets/smtp_password
+  smtp_require_tls: true
+
+route:
+  receiver: ops-email
+  group_by: [alertname, job]
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
+  routes:
+    # Critical alerts: shorter repeat so an ongoing outage keeps reminding
+    - matchers: ['severity="critical"']
+      receiver: ops-email
+      repeat_interval: 15m
+
+receivers:
+  - name: ops-email
+    email_configs:
+      - to: serveware.in@gmail.com
+        send_resolved: true
+        headers:
+          Subject: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }} on ServeWare {{ .CommonLabels.env }}'
+
+inhibit_rules:
+  # If the service is down, don't also send error-rate/latency noise for it
+  - source_matchers: ['alertname="ServeWareDown"']
+    target_matchers: ['severity="warning"']
+    equal: [job]

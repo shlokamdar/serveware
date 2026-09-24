@@ -1,0 +1,26 @@
+name: serveware-staging
+
+services:
+  web:
+    image: localhost:5000/serveware:${APP_VERSION:-latest}
+    container_name: serveware-staging-web
+    env_file: .env.staging
+    environment:
+      APP_VERSION: ${APP_VERSION:-latest}
+    ports:
+      - "8000:8000"
+    volumes:
+      - staging-data:/data
+      - staging-media:/app/media
+    restart: unless-stopped
+    networks: [serveware-net]
+    labels:
+      serveware.env: staging
+
+volumes:
+  staging-data:
+  staging-media:
+
+networks:
+  serveware-net:
+    external: true

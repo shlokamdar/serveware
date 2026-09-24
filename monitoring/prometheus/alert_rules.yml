@@ -1,0 +1,29 @@
+groups:
+  - name: serveware
+    rules:
+      - alert: ServeWareDown
+        expr: up{job=~"serveware-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "ServeWare {{ $labels.env }} is DOWN"
+          description: "Prometheus cannot scrape {{ $labels.instance }} for over 1 minute."
+
+      - alert: ServeWareHighErrorRate
+        expr: sum by (job, env) (rate(django_http_responses_total_by_status_total{status=~"5.."}[2m])) > 0.1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High 5xx rate on ServeWare {{ $labels.env }}"
+          description: "More than 0.1 server errors/sec for 1 minute (current {{ $value | printf \"%.2f\" }}/s)."
+
+      - alert: ServeWareSlowResponses
+        expr: histogram_quantile(0.95, sum by (le, job, env) (rate(django_http_requests_latency_seconds_by_view_method_bucket[5m]))) > 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 latency above 1s on ServeWare {{ $labels.env }}"
+          description: "95th percentile request latency is {{ $value | printf \"%.2f\" }}s."

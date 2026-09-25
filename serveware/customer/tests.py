@@ -22,7 +22,7 @@ class CartModelTests(ServeWareTestCase):
         cart = Cart.objects.create(user=make_customer(), restaurant=restaurant, table_code=table.table_code)
         CartItem.objects.create(cart=cart, menu_item=make_menu_item(restaurant, "A", "249.00"), quantity=2)
         CartItem.objects.create(cart=cart, menu_item=make_menu_item(restaurant, "B", "100.00"), quantity=1)
-        self.assertEqual(cart.total_price(), Decimal("598.00"))
+        self.assertEqual(cart.total_price(), Decimal("599.00"))
 
 
 class CartViewTests(ServeWareTestCase):

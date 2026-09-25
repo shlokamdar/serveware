@@ -109,7 +109,7 @@ pipeline {
                                    sourceDirectories: [[path: 'serveware']])
                     publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true,
                                  reportDir: 'serveware/htmlcov', reportFiles: 'index.html',
-                                 reportName: 'Coverage Report'])
+                                 reportName: 'Coverage HTML Report'])
                 }
             }
         }

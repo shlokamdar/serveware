@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import FileExtensionValidator
 
 from accounts.models import Restaurant
 from restaurant.models import MenuItem, Table
@@ -48,6 +49,11 @@ class TableEditForm(forms.ModelForm):
 
 
 class MenuItemForm(forms.ModelForm):
+    image = forms.ImageField(
+        required=False,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])],
+    )
+
     class Meta:
         model = MenuItem
         fields = [
@@ -64,3 +70,9 @@ class MenuItemForm(forms.ModelForm):
         if custom_category:
             category = custom_category
         return category
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image and getattr(image, 'size', 0) > 2 * 1024 * 1024:
+            raise forms.ValidationError("Image file size cannot exceed 2 MB.")
+        return image

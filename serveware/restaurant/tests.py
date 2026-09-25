@@ -1,9 +1,14 @@
+from io import BytesIO
 import json
+import os
 
+from PIL import Image
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import resolve, reverse
 
 from customer.models import Order
+from restaurant.forms import MenuItemForm
 from restaurant.models import MenuItem
 from testutils import (
     PASSWORD,
@@ -114,3 +119,71 @@ class AdminSearchTests(ServeWareTestCase):
         self.client.force_login(admin)
         response = self.client.get(reverse("admin:restaurant_table_changelist") + "?q=Test")
         self.assertEqual(response.status_code, 200)
+
+
+class MenuItemImageValidationTests(ServeWareTestCase):
+    def setUp(self):
+        self.owner, self.restaurant = make_restaurant_owner()
+
+    def _generate_png_bytes(self, size=(10, 10), randomize=False):
+        buf = BytesIO()
+        if randomize:
+            img = Image.new("RGB", size)
+            img.frombytes(os.urandom(size[0] * size[1] * 3))
+        else:
+            img = Image.new("RGB", size, color="blue")
+        img.save(buf, format="PNG")
+        return buf.getvalue()
+
+    def test_valid_small_png_accepted(self):
+        png_bytes = self._generate_png_bytes((10, 10))
+        image = SimpleUploadedFile("dish.png", png_bytes, content_type="image/png")
+        form = MenuItemForm(
+            data={"name": "Pasta", "price": "12.50", "category": "Main Course"},
+            files={"image": image},
+        )
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_exe_file_rejected(self):
+        png_bytes = self._generate_png_bytes((10, 10))
+        image = SimpleUploadedFile("malicious.exe", png_bytes, content_type="application/x-msdownload")
+        form = MenuItemForm(
+            data={"name": "Pasta", "price": "12.50", "category": "Main Course"},
+            files={"image": image},
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("image", form.errors)
+
+    def test_svg_file_rejected(self):
+        svg_content = b"<svg xmlns='http://www.w3.org/2000/svg'><circle r='10'/></svg>"
+        image = SimpleUploadedFile("vector.svg", svg_content, content_type="image/svg+xml")
+        form = MenuItemForm(
+            data={"name": "Pasta", "price": "12.50", "category": "Main Course"},
+            files={"image": image},
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("image", form.errors)
+
+    def test_file_over_2mb_rejected(self):
+        large_bytes = self._generate_png_bytes((900, 900), randomize=True)
+        self.assertGreater(len(large_bytes), 2 * 1024 * 1024)
+        image = SimpleUploadedFile("huge.png", large_bytes, content_type="image/png")
+        form = MenuItemForm(
+            data={"name": "Pasta", "price": "12.50", "category": "Main Course"},
+            files={"image": image},
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("image", form.errors)
+
+    def test_add_menu_item_view_accepts_valid_image(self):
+        self.client.login(username=self.owner.username, password=PASSWORD)
+        png_bytes = self._generate_png_bytes((10, 10))
+        image = SimpleUploadedFile("fresh_dish.png", png_bytes, content_type="image/png")
+        response = self.client.post(
+            reverse("restaurant:add-menu-item", args=[self.restaurant.qr_code]),
+            data={"name": "Fresh Dish", "price": "15.00", "category": "Main Course", "image": image},
+        )
+        self.assertEqual(response.status_code, 302)
+        created = MenuItem.objects.filter(restaurant=self.restaurant, name="Fresh Dish").first()
+        self.assertIsNotNone(created)
+        self.assertTrue(bool(created.image))
